@@ -1,94 +1,95 @@
 *:hover {
-    cursor: default;
-    caret-color: transparent;
+  cursor: default;
+  caret-color: transparent;
 }
 
 .content_bg {
-    background-color: rgba(205, 209, 228, .95);
-    min-height: 100vh;
-    height: 100%;
+  background-color: rgba(205, 209, 228, 0.95);
+  min-height: 100vh;
+  height: 100%;
 }
 
-.spacer{
-    height: 30px;
+.spacer {
+  height: 30px;
 }
 
-body {
-    background-image: url("/static/images/whiskey_collection_shelf_white_background.png");
-    background-size: cover;
-    min-height: 100vh;
+button {
+  background-color: transparent;
 }
 
-button{
-    background-color: transparent;
+.preview_img {
+  max-width: 400px;
 }
 
-/*** NavBar ***/  
-  .navbar-toggle {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 50px;
-    height: 50px;
-    border: none;
-    cursor: pointer;
-    z-index: 2;
-    transition: all 0.3s ease;
-  }
-  
-  .navbar-toggle.hide {
-    right: 200px;
-    opacity: 0;
-    pointer-events: none;
-  }
-  
-  .navbar-menu {
-    position: fixed;
-    top: 0;
-    right: -200px;
-    width: 200px;
-    height: 100%;
-    background-color: #222;
-    padding: 20px;
-    transition: all 0.3s ease;
-  }
-  
-  .navbar-menu li {
-    margin-bottom: 10px;
-  }
-  
-  .navbar-menu li a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 16px;
-  }
-  
-  .close-btn {
-    background-color: transparent;
-    border: none;
-    color: #fff;
-    font-size: 4rem;
-    cursor: pointer; 
-    margin-top: -35px;}
-  
-  .close-btn:hover {
-    color: #aaa;
-  }
-  
-  
-  .navbar-menu.active + .navbar-toggle {
-    right: 200px;
-    opacity: 0;
-    pointer-events: none;
-  }
-  
-  .navbar-menu.active {
-    right: 0;
-  }
+.home_hero {
+  min-width: 350px;
+}
 
-  .nav-link-text{
-    font-size: 4rem;
-  }
-  
-  
+/*** NavBar ***/
+.navbar-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 50px;
+  height: 50px;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.navbar-toggle.hide {
+  right: 200px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.navbar-menu {
+  position: fixed;
+  top: 0;
+  right: -200px;
+  width: 200px;
+  height: 100%;
+  background-color: #222;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.navbar-menu li {
+  margin-bottom: 10px;
+}
+
+.navbar-menu li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.close-btn {
+  background-color: transparent;
+  border: none;
+  color: #fff;
+  font-size: 4rem;
+  cursor: pointer;
+  margin-top: -35px;
+}
+
+.close-btn:hover {
+  color: #aaa;
+}
+
+.navbar-menu.active + .navbar-toggle {
+  right: 200px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.navbar-menu.active {
+  right: 0;
+}
+
+.nav-link-text {
+  font-size: 4rem;
+}
+
 /*** End NavBar ***/
