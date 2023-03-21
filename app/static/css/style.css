@@ -3,12 +3,6 @@
   caret-color: transparent;
 }
 
-.content_bg {
-  background-color: rgba(205, 209, 228, 0.95);
-  min-height: 100vh;
-  height: 100%;
-}
-
 .spacer {
   height: 30px;
 }
@@ -23,6 +17,23 @@ button {
 
 .home_hero {
   min-width: 350px;
+}
+
+.bordered {
+  border: 3px solid black;
+}
+
+.shadow-card {
+  border: 10px solid white;
+  border-radius: 5px;
+  box-shadow: 0em 0em 1em rgba(0, 0, 0, 0.3);
+}
+
+.login-button {
+  background-color: blue;
+  width: 400px;
+  height: 200px;
+  font-size: 100px;
 }
 
 /*** NavBar ***/
