@@ -15,48 +15,91 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>Top Shelf Whiskey</title>
   </head>
-  <body>
-    <section>
-          <div class="col">
-            <h1 class="fs-1">Top Shelf Whiskey</h1>
-            <h4>A whiskey collectors app</h4>
-          </div>
-          <div class="col d-flex justify-content-end">
-            <div>
-              <a class="btn btn-primary" href="/login">Login</a>
-              <a class="btn btn-primary" href="/register">Sign Up</a>
-            </div>
-          </div>
+  <body class="bg-orange-50">
+    <nav class="bg-gray-900 px-4 py-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <a href="#" class="text-white font-bold">Top Shelf Whiskey</a>
         </div>
-        <div class="row mb-5">
-          <div class="spacer"></div>
-          <div class="home_hero col my-auto">
-            <p>
-              This site is to help all levels of whiskey enthusist organize,
-              rate, and compare their collections.
-            </p>
-            <ul>
-              <li>Let others know what you think of their shelfs.</li>
-              <li>Compare your ratings to others</li>
-              <li>
-                see an intersting bottle on someones shelf, ask them what they
-                think or where they got it
-              </li>
-              <li>add bottes that you want to try later</li>
-              <li>
-                leave notes for bottles you want to buy again in the future
-              </li>
-            </ul>
-          </div>
-          <div class="col home_hero mt-5">
+        <div class="flex md:hidden">
+          <button
+            type="button"
+            class="toggle-menu text-white hover:text-gray-300 focus:outline-none focus:text-gray-300"
+          >
             <img
-              class="preview_img img-fluid bordered"
-              src="static/images/2 My Shelf.png"
+              class="w-5"
+              src="{{url_for('static',filename='images/bars-solid.png')}}"
               alt=""
             />
-          </div>
+          </button>
+        </div>
+        <div class="hidden md:flex">
+          <ul class="flex space-x-4 text-gray-300">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
         </div>
       </div>
+      <div class="navbar-menu hidden md:hidden">
+        <ul class="flex flex-col space-y-4 text-gray-300">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+    <section class="grid grid-cols-1 md:grid-cols-5 gap-4 p-10">
+      <div class="container col-span-2">
+        <h1
+          class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl"
+        >
+          Top Shelf Whiskey
+        </h1>
+        <h4
+          class="mb-4 text-4xl leading-none tracking-tight text-gray-900 md:text-5xl lg:text-3xl"
+        >
+          A whiskey collectors app
+        </h4>
+      </div>
+      <div class="container flex justify-evenly align-middle my-10 col-span-3">
+        <a
+          class="rounded-full h-14 w-28 flex-none text-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium text-lg px-5 py-3 glow"
+          href="/login"
+          >Login</a
+        >
+        <a
+          class="rounded-full h-14 w-28 flex-none text-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium text-lg px-5 py-3"
+          href="/register"
+          >Sign Up</a
+        >
+      </div>
+      <div class="container mr-10 my-auto col-span-2">
+        <h4
+          class="text-2xl leading-none tracking-tight text-gray-900 md:w-4/5 md:text-xl lg:text-3xl mb-5"
+        >
+          This site is to help all levels of whiskey enthusist organize, rate,
+          and compare their collections.
+        </h4>
+        <ul class="text-lg max-w-md space-y-1 list-disc list-inside">
+          <li>Let others know what you think of their shelfs.</li>
+          <li>Compare your ratings to others</li>
+          <li>
+            see an intersting bottle on someones shelf, ask them what they think
+            or where they got it
+          </li>
+          <li>add bottes that you want to try later</li>
+          <li>leave notes for bottles you want to buy again in the future</li>
+        </ul>
+      </div>
+      <div class="container drop-shadow-lg col-span-3 my-10">
+        <img
+          class="preview_img img-fluid bordered"
+          src="static/images/2 My Shelf.png"
+          alt=""
+        />
+      </div>
     </section>
+    <script src="{{url_for('static',filename='js/script.js')}}"></script>
   </body>
 </html>
