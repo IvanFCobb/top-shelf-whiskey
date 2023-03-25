@@ -1,0 +1,60 @@
+{% extends "base.html" %} {% block title %}MyShelf{% endblock %} {% block
+content %}
+
+<section id="catagories" class="">
+  <form method="post" class="mb-4 w-56 mt-10 px-5 mx-5">
+      <label for="sort_order">Sort order:</label>
+      <select name="sort_order" id="sort_order">
+          <option value="asc"{% if sort_order == 'asc' %} selected{% endif %}>Ascending</option>
+          <option value="desc"{% if sort_order == 'desc' %} selected{% endif %}>Descending</option>
+      </select>
+  </form>
+</section>
+  <section class="grid grid-cols-1 2xl:grid-cols-6">
+    <div class="card-container mx-5 py-10 col-span-5">
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 xl:gap-8"
+      >
+        {% for i in cards %}
+        <div
+          class="card-animation bg-blue-500 text-white p-4 rounded-md shadow-lg hover:drop-shadow-2xl hover:scale-105 shadow-black flex justify-between m-1 "
+        >
+          <div class="description flex flex-col justify-between">
+            <h2 class="text-xl font-bold">Whiskey {{ i }}</h2>
+            <h3 class="text-lg font-bold">Distillery</h3>
+            <h3 class="text-lg font-bold">ABV: 140%</h3>
+          </div>
+          <img
+            class="object-contain h-40 w-20"
+            src="{{url_for('static',filename='images/placeholder_whiskey.png')}}"
+            alt=""
+          />
+        </div>
+
+        {% endfor %}
+      </div>
+    </div>
+    <div
+      class="recently-rated col-span-1 grid gap-4 border-4 border-slate-900 p-4 mx-auto xl:mr-5 align-top"
+    >
+      <h2 class="text-4xl text-center font-bold">Recently Rated</h2>
+      {% for i in range(1, 4) %}
+      <div
+        class="bg-blue-500 text-white p-4 rounded-md flex justify-between shadow-md hover:scale-105 shadow-black"
+      >
+        <div class="description flex flex-col justify-between">
+          <h2 class="text-xl font-bold">Whiskey {{ i }}</h2>
+          <h3 class="text-lg font-bold">Distillery</h3>
+          <h3 class="text-lg font-bold">ABV: 140%</h3>
+        </div>
+        <img
+          class="object-contain h-40 w-20"
+          src="{{url_for('static',filename='images/placeholder_whiskey.png')}}"
+          alt=""
+        />
+      </div>
+
+      {% endfor %}
+    </div>
+</section>
+{% endblock %}

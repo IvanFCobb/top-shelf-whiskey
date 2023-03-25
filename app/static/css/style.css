@@ -1,0 +1,12 @@
+@keyframes slideFromRight {
+  0% {
+    transform: translatey(-25%);
+  }
+  100% {
+    transform: translatey(0%);
+  }
+}
+
+.card-animation {
+  animation: slideFromRight 1s ease-out;
+}

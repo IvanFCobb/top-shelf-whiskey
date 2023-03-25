@@ -20,6 +20,18 @@ def register():
 def login():
     return render_template("login.html")
 
+@app.route('/myshelf', methods=['GET', 'POST'])
+def myshelf():
+    cards = list(range(1, 16))
+    sort_order = request.form.get('sort_order', 'asc')
+    if request.method == 'POST':
+        sort_order = request.form.get('sort_order', 'asc')
+        if sort_order == 'asc':
+            cards.sort()
+        elif sort_order == 'desc':
+            cards.sort(reverse=True)
+    return render_template("myshelf.html", cards=cards, sort_order=sort_order)
+
 
 
 @app.route('/login_user', methods=['POST'])
@@ -33,7 +45,7 @@ def login_user():
         flash("Invalid Email/Password", "login")
         return redirect('/')
     session['user_id'] = user_in_db.id
-    return redirect("/paintings")
+    return redirect("/whiskeys")
 
 
 
@@ -56,7 +68,7 @@ def register_user():
         }
         user_id = User.save(data)
         session['user_id'] = user_id
-        return redirect("/paintings")
+        return redirect("/whiskeys")
     else:
         return redirect('/')
     
@@ -66,10 +78,10 @@ def register_user():
 def purchase():
     data = {
         'user_id': session['user_id'],
-        'painting_id': request.form['painting_id']
+        'whiskey_id': request.form['whiskey_id']
     }
     User.add_purchase(data)
-    return redirect("/paintings")
+    return redirect("/whiskeys")
 
 
 

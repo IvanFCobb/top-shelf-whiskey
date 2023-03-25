@@ -8,40 +8,51 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}"
     />
-
     <link
       rel="stylesheet"
       href="{{url_for('static',filename='dist/css/output.css')}}"
     />
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     {%block links%}{%endblock%}
     <title>{%block title%}{%endblock%}</title>
   </head>
   <body>
-    <div class="content_bg">
-      <div class="spacer">
-        <button class="navbar-toggle" id="navbar-toggle">
-          <img
-            class="icon-nav img-fluid"
-            src="{{ url_for('static', filename='images/hamburger-menu-icon.svg') }}"
-            alt=""
-          />
-        </button>
-        <nav class="navbar-menu" id="navbar-menu">
-          <button class="close-btn" id="close-btn">&times;</button>
-          <ul>
-            <li><a class="nav-link fs-4" href="#">Home</a></li>
-            <li><a class="nav-link fs-4" href="#">About</a></li>
-            <li><a class="nav-link fs-4" href="#">Services</a></li>
-            <li><a class="nav-link fs-4" href="#">Contact</a></li>
+    <nav class="bg-gray-900 px-4 py-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <a href="#" class="text-white font-bold">Top Shelf Whiskey</a>
+        </div>
+        <div class="flex md:hidden">
+          <button
+            type="button"
+            class="toggle-menu text-white hover:text-gray-300 focus:outline-none focus:text-gray-300"
+          >
+            <img
+              class="w-5"
+              src="{{url_for('static',filename='images/bars-solid.png')}}"
+              alt=""
+            />
+          </button>
+        </div>
+        <div class="hidden md:flex">
+          <ul class="flex space-x-4 text-gray-300">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
           </ul>
-        </nav>
+        </div>
       </div>
+      <div class="navbar-menu hidden md:hidden">
+        <ul class="flex flex-col space-y-4 text-gray-300">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
 
-      {% block content %} {% endblock %}
-    </div>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block content %} {% endblock %}
+
+    <script src="{{url_for('static',filename='js/script.js')}}"></script>
   </body>
 </html>
