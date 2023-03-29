@@ -51,18 +51,18 @@
     </nav>
 
     <section>
-      <div>
+      <div
+        class="block text-md max-w-sm p-6 mx-auto mt-6 bg-white border border-gray-200 rounded-lg drop-shadow-lg md:max-w-xl md:text-x"
+      >
         {% with login_messages = get_flashed_messages(with_categories=True,
         category_filter='login') %} {% if login_messages %}
         <ul>
           {% for category, message in login_messages %}
-          <li>{{ message }}</li>
+          <li class="text-red-600">{{ message }}</li>
           {% endfor %}
         </ul>
         {% endif %} {% endwith %}
-        <form
-          class="block text-md max-w-sm p-6 mx-auto mt-6 bg-white border border-gray-200 rounded-lg drop-shadow-lg md:max-w-xl md:text-xl"
-        >
+        <form class="l" action="/login_user" method="post">
           <div class="mb-6">
             <label for="email" class="block mb-2 font-wea text-gray-900"
               >Email:</label
@@ -72,6 +72,7 @@
               id="email"
               class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               placeholder="name@gmail.com"
+              name="email"
               required
             />
           </div>
@@ -82,6 +83,7 @@
             <input
               type="password"
               id="password"
+              name="password"
               class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               required
             />

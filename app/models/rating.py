@@ -1,20 +1,19 @@
 from app.config.mysqlconnection import connectToMySQL
 from app.models import whiskey
+from app.models import user
 from flask import flash
-import re
-EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 
 
 
-class User:
+class Rating:
     def __init__(self, data):
         self.id = data['id']
-        self.username = data['username']
-        self.email = data['email']
-        self.password = data['password']
+        self.rating = data['rating']
+        self.user_id = data['user_id']
+        self.whiskey_id = data['whiskey_id']
         self.created_at = data['created_at']
         self.updated_at = data['updated_at']
-        self.whiskeys_who_rated = []
+        self.users_who_rated = []
 
 
 

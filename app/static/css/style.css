@@ -1,3 +1,11 @@
+* {
+  cursor: default;
+}
+
+a {
+  cursor: pointer;
+}
+
 @keyframes slideFromRight {
   0% {
     transform: translatey(-25%);

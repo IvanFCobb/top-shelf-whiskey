@@ -7,9 +7,10 @@ class Whiskey:
     def __init__(self, data):
         self.id = data['id']
         self.name = data['name']
-        self.catagory = data['catagory']
+        self.category = data['category']
         self.distillery = data['distillery']
         self.age = data['age']
+        self.abv = '{0:.1f}'.format(data['abv'])
         self.created_at = data['created_at']
         self.updated_at = data['updated_at']
         self.user_id = data['user_id']
@@ -23,7 +24,7 @@ class Whiskey:
     @classmethod
     def get_all_whiskeys_with_creator(cls):
         query = "SELECT * FROM whiskeys JOIN users ON whiskeys.user_id = users.id"
-        results = connectToMySQL('whiskeys').query_db(query)
+        results = connectToMySQL('whiskeydb').query_db(query)
         all_whiskeys = []
         for row in results:
             one_whiskey = cls(row)
@@ -44,17 +45,16 @@ class Whiskey:
     
     
     @classmethod
-    def get_all_ratingd_whiskeys(cls, id):
-        query = "select * from ratings join whiskeys on whiskeys.id = whiskey_id  join users on whiskeys.user_id = users.id where ratings.User_id = '{}';".format(id)
-        results = connectToMySQL('whiskeys').query_db(query)
+    def get_all_rated_whiskeys(cls, data):
+        query = "select * from ratings join whiskeys on whiskeys.id = whiskey_id  join users on whiskeys.user_id = users.id where ratings.User_id = %(id)s;"
+        results = connectToMySQL('whiskeydb').query_db(query, data)
         all_whiskeys = []
         for row in results:
             row["id"] = row["whiskey_id"]
             one_whiskey = cls(row)
             one_whiskeys_creator_info = {
                 "id": row['user_id'], 
-                "first_name": row['first_name'],
-                "last_name": row['last_name'],
+                "username": row['username'],
                 "email": row['email'],
                 "password": row['password'],
                 "created_at": row['users.created_at'],
@@ -71,7 +71,7 @@ class Whiskey:
     @classmethod
     def get_by_id_with_creator(cls, id):
         query = "SELECT * FROM whiskeys JOIN users ON whiskeys.user_id = users.id LEFT JOIN ratings on ratings.whiskey_id = whiskeys.id WHERE whiskeys.id = '{}';".format(id)
-        results = connectToMySQL('whiskeys').query_db(query)
+        results = connectToMySQL('whiskeydb').query_db(query)
         whiskey = cls(results[0])
         whiskey_creator_info = {
                 "id": results[0]["user_id"], 
@@ -99,7 +99,7 @@ class Whiskey:
     @classmethod
     def save(cls, data):
         query = "INSERT INTO whiskeys ( title, description, price, quantity, user_id, created_at, updated_at ) VALUES ( %(title)s, %(description)s, %(price)s, %(quantity)s, %(user_id)s, NOW(), NOW());"
-        return connectToMySQL('whiskeys').query_db(query, data)
+        return connectToMySQL('whiskeydb').query_db(query, data)
     
     
     
@@ -107,7 +107,7 @@ class Whiskey:
     def edit(cls, data):
         query = "UPDATE whiskeys SET title = %(title)s, description = %(description)s, price = %(price)s, quantity = %(quantity)s, updated_at = now() WHERE (id = {});".format(
             data["id"])
-        return connectToMySQL('whiskeys').query_db(query, data)
+        return connectToMySQL('whiskeydb').query_db(query, data)
     
     
     
@@ -118,7 +118,7 @@ class Whiskey:
         query = "DELETE FROM whiskeys WHERE (id = {});".format(
             num)
         connectToMySQL('whiskeys').query_db(query_ratings)
-        return connectToMySQL('whiskeys').query_db(query)
+        return connectToMySQL('whiskeydb').query_db(query)
        
     
 

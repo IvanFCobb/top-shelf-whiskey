@@ -1,6 +1,5 @@
 {% extends "base.html" %} {% block title %}MyShelf{% endblock %} {% block
 content %}
-
 <section id="catagories" class="">
   <form method="post" class="mb-4 w-56 mt-10 px-5 mx-5">
       <label for="sort_order">Sort order:</label>
@@ -15,14 +14,14 @@ content %}
       <div
         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 xl:gap-8"
       >
-        {% for i in cards %}
+        {% for whiskey in whiskeys %}
         <div
           class="card-animation bg-blue-500 text-white p-4 rounded-md shadow-lg hover:drop-shadow-2xl hover:scale-105 shadow-black flex justify-between m-1 "
         >
           <div class="description flex flex-col justify-between">
-            <h2 class="text-xl font-bold">Whiskey {{ i }}</h2>
-            <h3 class="text-lg font-bold">Distillery</h3>
-            <h3 class="text-lg font-bold">ABV: 140%</h3>
+            <h2 class="text-xl font-bold">{{whiskey.name}}</h2>
+            <h3 class="text-lg font-bold">{{whiskey.distillery}}</h3>
+            <h3 class="text-lg font-bold">ABV: {{whiskey.abv}}%</h3>
           </div>
           <img
             class="object-contain h-40 w-20"

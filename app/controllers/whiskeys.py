@@ -6,7 +6,7 @@ from flask import render_template, redirect, request, session, flash
 
 
 
-@app.route('/whiskeys')
+@app.route('/topwhiskey')
 def whiskeys():
     if 'user_id' not in session:
         return redirect ("/")
@@ -15,8 +15,8 @@ def whiskeys():
     }
     user = User.get_by_id(data)
     whiskeys = Whiskey.get_all_whiskeys_with_creator()
-    purchased = Whiskey.get_all_purchased_whiskeys(session['user_id'])
-    return render_template("whiskeys.html", user=user, whiskeys = whiskeys, purchased = purchased)
+    rated = Whiskey.get_all_rated_whiskeys(session['user_id'])
+    return render_template("whiskeys.html", user=user, whiskeys = whiskeys, rated = rated)
 
 
 
@@ -67,7 +67,7 @@ def whiskey_edit(num):
 def whiskey_delete(num):
     if 'user_id' not in session:
         return redirect ("/")
-    whiskey.delete(num)
+    Whiskey.delete(num)
     return redirect("/whiskeys")
 
 
@@ -76,7 +76,7 @@ def whiskey_delete(num):
 def new_whiskey():
     if 'user_id' not in session:
         return redirect ("/")
-    if whiskey.is_valid_whiskey(request.form):
+    if Whiskey.is_valid_whiskey(request.form):
         data = {
             "title": request.form['title'],
             "description": request.form['description'],
@@ -84,7 +84,7 @@ def new_whiskey():
             "quantity": request.form['quantity'],
             "user_id": session['user_id']
         }
-        whiskey.save(data)
+        Whiskey.save(data)
         return redirect("/whiskeys")
     else: 
         return redirect('/whiskeys/new')
@@ -95,7 +95,7 @@ def new_whiskey():
 def edit_whiskey():
     if 'user_id' not in session:
         return redirect ("/")
-    if whiskey.is_valid_whiskey(request.form): 
+    if Whiskey.is_valid_whiskey(request.form): 
         data = {
             "id": session["whiskey_id"],
             "title": request.form['title'],
@@ -104,7 +104,7 @@ def edit_whiskey():
             "quantity": request.form['quantity'],
             "user_id": session['user_id']
         }
-        whiskey.edit(data)
+        Whiskey.edit(data)
         session.pop('whiskey_id', default=None)
         return redirect("/whiskeys")
     else:

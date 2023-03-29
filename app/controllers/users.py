@@ -1,4 +1,8 @@
 from app.models.user import User
+from app.models.whiskey import Whiskey
+from app.models.rating import Rating
+
+
 from app import app
 from flask import render_template, redirect, request, session, flash
 from flask_bcrypt import Bcrypt
@@ -22,15 +26,23 @@ def login():
 
 @app.route('/myshelf', methods=['GET', 'POST'])
 def myshelf():
-    cards = list(range(1, 16))
+    if 'user_id' not in session:
+        return redirect ("/")
+    data = {
+        "id": session['user_id']
+    }
+    whiskeys = Whiskey.get_all_rated_whiskeys(data)
+    user = User.get_by_id(data)
+    cards = list(range(1, len(whiskeys)+1))
     sort_order = request.form.get('sort_order', 'asc')
+    print(type(whiskeys[0].abv))
     if request.method == 'POST':
         sort_order = request.form.get('sort_order', 'asc')
         if sort_order == 'asc':
             cards.sort()
         elif sort_order == 'desc':
             cards.sort(reverse=True)
-    return render_template("myshelf.html", cards=cards, sort_order=sort_order)
+    return render_template("myshelf.html", cards=cards, sort_order=sort_order, whiskeys=whiskeys, user=user)
 
 
 
@@ -40,12 +52,12 @@ def login_user():
     user_in_db = User.get_by_email(data["email"])
     if not user_in_db:
         flash("Invalid Email/Password", "login")
-        return redirect("/")
+        return redirect("/login")
     if not bcrypt.check_password_hash(user_in_db.password, request.form['password']):
         flash("Invalid Email/Password", "login")
-        return redirect('/')
+        return redirect('/login')
     session['user_id'] = user_in_db.id
-    return redirect("/whiskeys")
+    return redirect("/myshelf")
 
 
 
@@ -61,16 +73,15 @@ def register_user():
     if User.is_valid_user(request.form):
         pw_hash = bcrypt.generate_password_hash(request.form['password'])
         data = {
-        "fname": request.form['fname'],
-        "lname": request.form['lname'],
+        "username": request.form['username'],
         "email": request.form['email'],
         "password": pw_hash,
         }
         user_id = User.save(data)
         session['user_id'] = user_id
-        return redirect("/whiskeys")
+        return redirect("/myshelf")
     else:
-        return redirect('/')
+        return redirect('/register')
     
     
     
