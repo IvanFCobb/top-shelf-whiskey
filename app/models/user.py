@@ -75,5 +75,8 @@ class User:
         if not EMAIL_REGEX.match(data['email']):
             flash("Invalid email address!", "register")
             is_valid = False
+        if len(data['email']) < 1:
+            flash("Email cannot be blank!", "register")
+            is_valid = False      
         return is_valid
 

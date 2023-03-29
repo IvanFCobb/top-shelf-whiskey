@@ -14,39 +14,19 @@ class Whiskey:
         self.created_at = data['created_at']
         self.updated_at = data['updated_at']
         self.user_id = data['user_id']
+        self.rating = data['rating']
         self.creator = None
         self.users_who_rated = []
         self.number_of_ratings = []
         
 
 
-
-    @classmethod
-    def get_all_whiskeys_with_creator(cls):
-        query = "SELECT * FROM whiskeys JOIN users ON whiskeys.user_id = users.id"
-        results = connectToMySQL('whiskeydb').query_db(query)
-        all_whiskeys = []
-        for row in results:
-            one_whiskey = cls(row)
-            one_whiskeys_creator_info = {
-                "id": row['users.id'], 
-                "first_name": row['first_name'],
-                "last_name": row['last_name'],
-                "email": row['email'],
-                "password": row['password'],
-                "created_at": row['users.created_at'],
-                "updated_at": row['users.updated_at'],
-            }
-            creator = user.User(one_whiskeys_creator_info)
-            one_whiskey.creator = creator
-            all_whiskeys.append(one_whiskey)
-        return all_whiskeys
     
     
     
     @classmethod
     def get_all_rated_whiskeys(cls, data):
-        query = "select * from ratings join whiskeys on whiskeys.id = whiskey_id  join users on whiskeys.user_id = users.id where ratings.User_id = %(id)s;"
+        query = f"select * from ratings join whiskeys on whiskeys.id = whiskey_id  join users on whiskeys.user_id = users.id where ratings.User_id = {data['id']} ORDER BY rating {data['sort_order']};"
         results = connectToMySQL('whiskeydb').query_db(query, data)
         all_whiskeys = []
         for row in results:

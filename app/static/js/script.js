@@ -32,9 +32,3 @@ function animateCards() {
 
 window.addEventListener("scroll", animateCards);
 window.addEventListener("load", animateCards);
-
-// script for sorting the cards
-
-document.getElementById("sort_order").addEventListener("change", function () {
-  document.querySelector("form").submit();
-});

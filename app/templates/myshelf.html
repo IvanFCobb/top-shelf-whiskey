@@ -1,59 +1,107 @@
 {% extends "base.html" %} {% block title %}MyShelf{% endblock %} {% block
 content %}
-<section id="catagories" class="">
-  <form method="post" class="mb-4 w-56 mt-10 px-5 mx-5">
-      <label for="sort_order">Sort order:</label>
-      <select name="sort_order" id="sort_order">
-          <option value="asc"{% if sort_order == 'asc' %} selected{% endif %}>Ascending</option>
-          <option value="desc"{% if sort_order == 'desc' %} selected{% endif %}>Descending</option>
+<section id="catagories" class="p-2 xl:p-4">
+  <form
+    method="get"
+    action="/myshelf"
+    class="mb-4 w-56 mt-10 mx-5 text-white bg-slate-500 hover:bg-slate-600 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300"
+  >
+    <div class="form-group">
+      <label class="py-2 text-sm dark:text-gray-200" for="sort"
+        >Sort by rating:</label
+      >
+      <select
+        class="py-2 text-sm text-gray-700 dark:text-gray-200"
+        name="sort"
+        id="sort"
+        onchange="this.form.submit()"
+      >
+        <option
+          class="block px-4 py-2 hover:bg-gray-100"
+          value="desc"
+          {%
+          if
+          sort_by_rating
+          %}selected{%
+          endif
+          %}
+        >
+          High-Low
+        </option>
+        <option
+          class="block px-4 py-2 hover:bg-gray-100"
+          value="asc"
+          {%
+          if
+          not
+          sort_by_rating
+          %}selected{%
+          endif
+          %}
+        >
+          Low-High
+        </option>
       </select>
+    </div>
   </form>
 </section>
-  <section class="grid grid-cols-1 2xl:grid-cols-6">
-    <div class="card-container mx-5 py-10 col-span-5">
-      <div
-        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 xl:gap-8"
-      >
-        {% for whiskey in whiskeys %}
-        <div
-          class="card-animation bg-blue-500 text-white p-4 rounded-md shadow-lg hover:drop-shadow-2xl hover:scale-105 shadow-black flex justify-between m-1 "
-        >
-          <div class="description flex flex-col justify-between">
-            <h2 class="text-xl font-bold">{{whiskey.name}}</h2>
-            <h3 class="text-lg font-bold">{{whiskey.distillery}}</h3>
-            <h3 class="text-lg font-bold">ABV: {{whiskey.abv}}%</h3>
-          </div>
-          <img
-            class="object-contain h-40 w-20"
-            src="{{url_for('static',filename='images/placeholder_whiskey.png')}}"
-            alt=""
-          />
-        </div>
-
-        {% endfor %}
-      </div>
-    </div>
-    <div
-      class="recently-rated col-span-1 grid gap-4 border-4 border-slate-900 p-4 mx-auto xl:mr-5 align-top"
+<section class="p-2 xl:p-4 flex flex-col items-start xl:flex-row">
+  <div class="flex flex-wrap justify-start xl:ml-8">
+    {% for whiskey in whiskeys %}
+    <a
+      href="#"
+      class="card flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-gray-200"
     >
-      <h2 class="text-4xl text-center font-bold">Recently Rated</h2>
-      {% for i in range(1, 4) %}
-      <div
-        class="bg-blue-500 text-white p-4 rounded-md flex justify-between shadow-md hover:scale-105 shadow-black"
-      >
-        <div class="description flex flex-col justify-between">
-          <h2 class="text-xl font-bold">Whiskey {{ i }}</h2>
-          <h3 class="text-lg font-bold">Distillery</h3>
-          <h3 class="text-lg font-bold">ABV: 140%</h3>
-        </div>
-        <img
-          class="object-contain h-40 w-20"
-          src="{{url_for('static',filename='images/placeholder_whiskey.png')}}"
-          alt=""
-        />
+      <img
+        class="object-contain rounded-t-lg h-40 w-20 rounded-none rounded-l-lg ml-1"
+        src="{{url_for('static',filename='images/placeholder_whiskey.png')}}"
+        alt=""
+      />
+      <div class="flex flex-col justify-between p-4 leading-normal">
+        <h5
+          class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+        >
+          {{whiskey.name}}
+        </h5>
+        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+          ABV: {{whiskey.abv}}%
+        </p>
+        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+          Rating: {{whiskey.rating}}
+        </p>
       </div>
-
-      {% endfor %}
-    </div>
+    </a>
+    {% endfor %}
+  </div>
+  <div
+    class="recently-rated flex w-80 flex-col items-center border-4 border-slate-800 rounded-lg bg-slate-300 p-4 mx-auto my-4 shadow-md shadow-black xl:mr-8"
+  >
+    <h2 class="text-4xl text-center font-bold">Recently Rated</h2>
+    {% for i in range(1 , 4) %}
+    <a
+      href="#"
+      class="card flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-gray-200"
+    >
+      <img
+        class="object-contain rounded-t-lg h-40 w-20 rounded-none rounded-l-lg"
+        src="{{url_for('static',filename='images/placeholder_whiskey.png')}}"
+        alt=""
+      />
+      <div class="flex flex-col justify-between p-4 leading-normal">
+        <h5
+          class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+        >
+          whis
+        </h5>
+        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+          ABV: whi%
+        </p>
+        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+          Rating: whiske
+        </p>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
 </section>
 {% endblock %}

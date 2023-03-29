@@ -28,21 +28,27 @@ def login():
 def myshelf():
     if 'user_id' not in session:
         return redirect ("/")
+    sort_by_rating = request.args.get("sort", "desc") == "desc"    
+    if sort_by_rating:
+        sort_order = "DESC"
+    else:
+        sort_order = "ASC"
+    print(sort_by_rating)
+    print(sort_order)
+    if request.method == 'POST':
+        form_sort_order = request.form.get('sort_order', 'asc')
+        if form_sort_order:
+            sort_order = 'asc'
+        else:
+            sort_order = 'desc'
     data = {
-        "id": session['user_id']
+        "id": session['user_id'],
+        "sort_order": sort_order
     }
     whiskeys = Whiskey.get_all_rated_whiskeys(data)
     user = User.get_by_id(data)
-    cards = list(range(1, len(whiskeys)+1))
-    sort_order = request.form.get('sort_order', 'asc')
-    print(type(whiskeys[0].abv))
-    if request.method == 'POST':
-        sort_order = request.form.get('sort_order', 'asc')
-        if sort_order == 'asc':
-            cards.sort()
-        elif sort_order == 'desc':
-            cards.sort(reverse=True)
-    return render_template("myshelf.html", cards=cards, sort_order=sort_order, whiskeys=whiskeys, user=user)
+    
+    return render_template("myshelf.html", sort_by_rating=sort_by_rating, whiskeys=whiskeys, user=user)
 
 
 
