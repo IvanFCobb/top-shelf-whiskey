@@ -1,56 +1,136 @@
 {% extends "base.html" %} {% block title %}MyShelf{% endblock %} {% block
 content %}
 <section id="catagories" class="p-2 xl:p-4">
-  <form
-    method="get"
-    action="/myshelf"
-    class="mb-4 w-56 mt-10 mx-5 text-white bg-slate-500 hover:bg-slate-600 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300"
-  >
-    <div class="form-group">
-      <label class="py-2 text-sm dark:text-gray-200" for="sort"
-        >Sort by rating:</label
-      >
-      <select
-        class="py-2 text-sm text-gray-700 dark:text-gray-200"
-        name="sort"
-        id="sort"
-        onchange="this.form.submit()"
-      >
-        <option
-          class="block px-4 py-2 hover:bg-gray-100"
-          value="desc"
-          {%
-          if
-          sort_by_rating
-          %}selected{%
-          endif
-          %}
+  <div class="flex flex-wrap justify-center xl:justify-start">
+    <form
+      method="get"
+      action="/myshelf"
+      class="mb-4 w-fit ml-2 mr-10 mt-10 xl:mx-10 text-white bg-slate-500 hover:bg-slate-600 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300"
+    >
+      <div class="form-group">
+        <label class="py-2 text-sm dark:text-gray-200" for="sort"
+          >Sort by rating:</label
         >
-          High-Low
-        </option>
-        <option
-          class="block px-4 py-2 hover:bg-gray-100"
-          value="asc"
-          {%
-          if
-          not
-          sort_by_rating
-          %}selected{%
-          endif
-          %}
+        <select
+          class="py-2 text-sm text-gray-700 dark:text-gray-200 rounded-lg"
+          name="sort"
+          id="sort"
+          onchange="this.form.submit()"
         >
-          Low-High
-        </option>
-      </select>
-    </div>
-  </form>
+          <option
+            class="block px-4 py-2 hover:bg-gray-100"
+            value="desc"
+            {%
+            if
+            sort_by_rating
+            %}selected{%
+            endif
+            %}
+          >
+            High-Low
+          </option>
+          <option
+            class="block px-4 py-2 hover:bg-gray-100"
+            value="asc"
+            {%
+            if
+            not
+            sort_by_rating
+            %}selected{%
+            endif
+            %}
+          >
+            Low-High
+          </option>
+        </select>
+      </div>
+    </form>
+    <form
+      method="get"
+      action="/myshelf"
+      class="mb-4 w-fit ml-2 mr-10 mt-10 xl:mx-10 text-white bg-slate-500 hover:bg-slate-600 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300"
+    >
+      <div class="form-group">
+        <label class="py-2 text-sm dark:text-gray-200" for="sort"
+          >Filter by category:</label
+        >
+        <select
+          class="py-2 text-sm text-gray-700 dark:text-gray-200 rounded-lg"
+          name="sort"
+          id="sort"
+          onchange="this.form.submit()"
+        >
+          <option
+            class="block px-4 py-2 hover:bg-gray-100"
+            value="desc"
+            {%
+            if
+            filter_by_rating
+            %}selected{%
+            endif
+            %}
+          >
+            High-Low
+          </option>
+          <option
+            class="block px-4 py-2 hover:bg-gray-100"
+            value="asc"
+            {%
+            if
+            not
+            filter_by_rating
+            %}selected{%
+            endif
+            %}
+          >
+            Low-High
+          </option>
+        </select>
+      </div>
+    </form>
+  </div>
 </section>
-<section class="p-2 xl:p-4 flex flex-col items-start xl:flex-row">
-  <div class="flex flex-wrap justify-start xl:ml-8">
-    {% for whiskey in whiskeys %}
+<section
+  class="p-2 xl:p-4 flex flex-col justify-between items-start lg:flex-row"
+>
+  <div id="whiskey-cards" class="flex flex-wrap justify-start xl:ml-8">
+    {% if whiskeys|length < 1 %}
     <a
-      href="#"
-      class="card flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-gray-200"
+      href="/topwhiskey"
+      class="card flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-gray-200 hover:scale-125"
+    >
+      <div class="flex flex-col justify-between p-4 leading-normal">
+        <h5
+          class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+        >
+          Top Whiskeys
+        </h5>
+        <p class="mb-3 font-semibold text-gray-700 dark:text-gray-400">
+          got chekcout the top rated whiskeys and add them to your shelf by
+          rating the ones you have tried.
+        </p>
+      </div>
+    </a>
+    <a
+      href="/whiskeys/new"
+      class="card flex flex-row items-center text-start m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-gray-200 hover:scale-125"
+    >
+      <div class="flex flex-col content-between p-4 leading-normal">
+        <h5
+          class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+        >
+          Add a Whiskey
+        </h5>
+        <p class="mb-3 font-semibold text-gray-700 dark:text-gray-400">
+          If you cant find the whiskey you are looking for, you can add it.
+        </p>
+      </div>
+    </a>
+
+    {% endif %} {% for whiskey in whiskeys %}
+    <a
+      href="/whiskey/{{whiskey.id}}"
+      class="card flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-gray-200 hover:scale-125"
     >
       <img
         class="object-contain rounded-t-lg h-40 w-20 rounded-none rounded-l-lg ml-1"
@@ -74,12 +154,16 @@ content %}
     {% endfor %}
   </div>
   <div
-    class="recently-rated flex w-80 flex-col items-center border-4 border-slate-800 rounded-lg bg-slate-300 p-4 mx-auto my-4 shadow-md shadow-black xl:mr-8"
+    id="recently-rated"
+    class="flex w-80 flex-col items-center text-end border-4 border-slate-800 rounded-lg bg-slate-300 p-4 my-4 shadow-md shadow-black xl:mr-8 object-contain h-screen"
   >
     <h2 class="text-4xl text-center font-bold">Recently Rated</h2>
-    {% for i in range(1 , 4) %}
+    {% if whiskeys|length < 1 %}
+    <h1 class="mt-4">You havent rated any whiskey yet.</h1>
+
+    {% endif %} {% for whiskey in recent %}
     <a
-      href="#"
+      href="/whiskey/{{whiskey.id}}"
       class="card flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-gray-200"
     >
       <img
@@ -91,13 +175,13 @@ content %}
         <h5
           class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
         >
-          whis
+          {{whiskey.name}}
         </h5>
         <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-          ABV: whi%
+          ABV: {{whiskey.abv}}%
         </p>
         <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-          Rating: whiske
+          Rating: {{whiskey.rating}}
         </p>
       </div>
     </a>

@@ -19,10 +19,18 @@ class Whiskey:
         self.users_who_rated = []
         self.number_of_ratings = []
         
-
-
     
     
+    @classmethod
+    def get_whiskeys(cls, data):
+        query = f"select round(avg(rating), 1) rating, whiskey_id, whiskeys.name, whiskeys.category, whiskeys.distillery, whiskeys.age, whiskeys.created_at, whiskeys.updated_at, whiskeys.user_id, whiskeys.abv from ratings join whiskeys on whiskeys.id = whiskey_id group by whiskey_id ORDER by rating {data['sort_order']};"
+        results = connectToMySQL('whiskeydb').query_db(query, data)
+        all_whiskeys = []
+        for row in results:
+            row["id"] = row["whiskey_id"]
+            one_whiskey = cls(row)
+            all_whiskeys.append(one_whiskey)
+        return all_whiskeys
     
     @classmethod
     def get_all_rated_whiskeys(cls, data):
@@ -45,40 +53,32 @@ class Whiskey:
             all_whiskeys.append(one_whiskey)
         return all_whiskeys
     
-
-
-
     @classmethod
-    def get_by_id_with_creator(cls, id):
-        query = "SELECT * FROM whiskeys JOIN users ON whiskeys.user_id = users.id LEFT JOIN ratings on ratings.whiskey_id = whiskeys.id WHERE whiskeys.id = '{}';".format(id)
-        results = connectToMySQL('whiskeydb').query_db(query)
-        whiskey = cls(results[0])
-        whiskey_creator_info = {
-                "id": results[0]["user_id"], 
-                "first_name": results[0]["first_name"],
-                "last_name": results[0]["last_name"],
-                "email": results[0]["email"],
-                "password": results[0]["password"],
-                "created_at": results[0]["users.created_at"],
-                "updated_at": results[0]["users.updated_at"]
-            }
+    def get_recently_rated_whiskeys(cls, data):
+        query = f"select * from ratings join whiskeys on whiskeys.id = whiskey_id  join users on whiskeys.user_id = users.id where ratings.User_id = {data['id']} ORDER BY ratings.updated_at DESC LIMIT 4;"
+        results = connectToMySQL('whiskeydb').query_db(query, data)
+        recent_whiskeys = []
         for row in results:
-            if row['whiskey_id'] == None:
-                break
-            data = {
-            "whiskey_id": row['whiskey_id'],
-            "user_id": row['User_id']
+            row["id"] = row["whiskey_id"]
+            one_whiskey = cls(row)
+            one_whiskeys_creator_info = {
+                "id": row['user_id'], 
+                "username": row['username'],
+                "email": row['email'],
+                "password": row['password'],
+                "created_at": row['users.created_at'],
+                "updated_at": row['users.updated_at'],
             }
-            whiskey.number_of_ratings.append(data)
-        creator = user.User(whiskey_creator_info)
-        whiskey.creator = creator
-        return whiskey
+            creator = user.User(one_whiskeys_creator_info)
+            one_whiskey.creator = creator
+            recent_whiskeys.append(one_whiskey)
+        return recent_whiskeys 
     
     
     
     @classmethod
     def save(cls, data):
-        query = "INSERT INTO whiskeys ( title, description, price, quantity, user_id, created_at, updated_at ) VALUES ( %(title)s, %(description)s, %(price)s, %(quantity)s, %(user_id)s, NOW(), NOW());"
+        query = "INSERT INTO whiskeys ( name, category, distillery, age, abv, user_id) VALUES ( %(name)s, %(category)s, %(distillery)s, %(age)s, %(abv)s, %(user_id)s);"
         return connectToMySQL('whiskeydb').query_db(query, data)
     
     
@@ -105,24 +105,24 @@ class Whiskey:
     @staticmethod
     def is_valid_whiskey(data):
         is_valid = True
-        if len(data['title']) < 2:
+        if len(data['name']) < 1:
             flash("Title must be at least 2 characters", "whiskey")
             is_valid = False
-        if len(data['description']) < 9:
+        if len(data['category']) < 1:
             flash("Description must be at least 10 characters", "whiskey")
             is_valid = False
-        if len(data['price']) < 1:
+        if len(data['distillery']) < 1:
             flash("Price Required", "whiskey")
             is_valid = False
-        if len(data['price']) > 0:
-            if float(data['price']) <= 0:
+        if len(data['age']) > 0:
+            if float(data['age']) <= 0:
                 flash("Price must be greater than 0", "whiskey")
                 is_valid = False
-        if len(data['quantity']) < 1:
+        if len(data['abv']) < 1:
             flash("Quantity Required", "whiskey")
             is_valid = False
-        if len(data['quantity']) > 0:
-            if float(data['quantity']) <= 0:
+        if len(data['rating']) > 0:
+            if float(data['rating']) <= 0:
                 flash("Quantity must be greater than 0", "whiskey")
                 is_valid = False
         return is_valid

@@ -32,3 +32,15 @@ function animateCards() {
 
 window.addEventListener("scroll", animateCards);
 window.addEventListener("load", animateCards);
+
+// Dropdown menu
+
+document.addEventListener("DOMContentLoaded", () => {
+  const dropdownMenu = document.getElementById("dropdownMenu");
+  const submitButton = document.getElementById("submitButton");
+
+  dropdownMenu.addEventListener("change", (e) => {
+    submitButton.textContent = e.target.options[e.target.selectedIndex].text;
+    document.getElementById("myForm").submit();
+  });
+});

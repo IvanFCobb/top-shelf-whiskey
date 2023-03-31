@@ -24,32 +24,6 @@ def register():
 def login():
     return render_template("login.html")
 
-@app.route('/myshelf', methods=['GET', 'POST'])
-def myshelf():
-    if 'user_id' not in session:
-        return redirect ("/")
-    sort_by_rating = request.args.get("sort", "desc") == "desc"    
-    if sort_by_rating:
-        sort_order = "DESC"
-    else:
-        sort_order = "ASC"
-    print(sort_by_rating)
-    print(sort_order)
-    if request.method == 'POST':
-        form_sort_order = request.form.get('sort_order', 'asc')
-        if form_sort_order:
-            sort_order = 'asc'
-        else:
-            sort_order = 'desc'
-    data = {
-        "id": session['user_id'],
-        "sort_order": sort_order
-    }
-    whiskeys = Whiskey.get_all_rated_whiskeys(data)
-    user = User.get_by_id(data)
-    
-    return render_template("myshelf.html", sort_by_rating=sort_by_rating, whiskeys=whiskeys, user=user)
-
 
 
 @app.route('/login_user', methods=['POST'])
@@ -88,17 +62,4 @@ def register_user():
         return redirect("/myshelf")
     else:
         return redirect('/register')
-    
-    
-    
-@app.route('/purchase', methods=["POST"])
-def purchase():
-    data = {
-        'user_id': session['user_id'],
-        'whiskey_id': request.form['whiskey_id']
-    }
-    User.add_purchase(data)
-    return redirect("/whiskeys")
-
-
 

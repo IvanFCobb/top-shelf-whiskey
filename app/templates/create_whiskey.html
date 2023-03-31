@@ -1,0 +1,137 @@
+{% extends "base.html" %} {% block title %}MyShelf{% endblock %} {% block
+content %}
+<section class="mt-8">
+  <div class="flex flex-col justify-center xl:flex-row">
+    <form
+      class="mb-8 text-md block text-md max-w-sm p-6 mx-auto mt-6 bg-white border border-gray-200 rounded-lg drop-shadow-lg md:w-full md:text-xl"
+      action="/create_whiskey"
+      method="post"
+      enctype="multipart/form-data"
+    >
+      <div class="">
+        {% with register_messages = get_flashed_messages(with_categories=True,
+        category_filter='register') %} {% if register_messages %}
+        <ul class="text-danger">
+          {% for category, message in register_messages %}
+          <li class="text-red-600">{{ message }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %} {% endwith %}
+
+        <div class="mb-6">
+          <label for="name" class="block mb-2 font-wea text-gray-900"
+            >Name:</label
+          >
+          <input
+            type="text"
+            id="name"
+            name="name"
+            class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            placeholder="name"
+            required
+          />
+        </div>
+        <div class="mb-6">
+          <label
+            for="category"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >Category</label
+          >
+          <select
+            id="category"
+            name="category"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          >
+            <option selected>Choose a category</option>
+            <option value="US">United States</option>
+            <option value="CA">Canada</option>
+            <option value="FR">France</option>
+            <option value="DE">Germany</option>
+          </select>
+        </div>
+        <div class="mb-6">
+          <label
+            for="distillery"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >Distillery</label
+          >
+          <select
+            id="distillery"
+            name="distillery"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          >
+            <option selected>Choose a distillery</option>
+            <option value="US">United States</option>
+            <option value="CA">Canada</option>
+            <option value="FR">France</option>
+            <option value="DE">Germany</option>
+          </select>
+        </div>
+        <div class="mb-6">
+          <label for="age" class="block mb-2 font-medium text-gray-900"
+            >Age</label
+          >
+          <input
+            type="number"
+            id="age"
+            name="age"
+            class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            required
+          />
+        </div>
+        <div class="mb-6">
+          <label for="abv" class="block mb-2 font-medium text-gray-900"
+            >Abv</label
+          >
+          <input
+            type="number"
+            id="abv"
+            name="abv"
+            class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            required
+          />
+        </div>
+        <div class="mb-6">
+          <label for="rating" class="block mb-2 font-medium text-gray-900"
+            >Rating</label
+          >
+          <input
+            type="number"
+            id="rating"
+            name="rating"
+            class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            required
+          />
+        </div>
+        <div class="mb-6">
+          <label
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            for="image"
+            >Upload Bottle Image</label
+          >
+          <input
+            class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+            aria-describedby="file_input_help"
+            id="image"
+            type="file"
+            name="image"
+          />
+          <p
+            class="mt-1 text-sm text-gray-500 dark:text-gray-300"
+            id="file_input_help"
+          >
+            SVG, PNG, JPG or GIF (MAX. 800x400px).
+          </p>
+        </div>
+
+        <button
+          type="submit"
+          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg w-full sm:w-auto px-5 py-2.5 text-center"
+        >
+          Submit
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}
