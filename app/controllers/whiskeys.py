@@ -62,8 +62,12 @@ def myshelf():
         "id": session['user_id'],
         "sort_order": sort_order
     }
+    filters = {
+        "category" : "all",
+        "distillery" : "all"
+    }
     recent = Whiskey.get_recently_rated_whiskeys(data)
-    whiskeys = Whiskey.get_all_rated_whiskeys(data)
+    whiskeys = Whiskey.get_all_rated_whiskeys(data, filters)
     user = User.get_by_id(data)
     
     return render_template("myshelf.html", sort_by_rating=sort_by_rating, whiskeys=whiskeys, user=user, recent = recent)

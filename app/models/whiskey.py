@@ -33,8 +33,16 @@ class Whiskey:
         return all_whiskeys
     
     @classmethod
-    def get_all_rated_whiskeys(cls, data):
-        query = f"select * from ratings join whiskeys on whiskeys.id = whiskey_id  join users on whiskeys.user_id = users.id where ratings.User_id = {data['id']} ORDER BY rating {data['sort_order']};"
+    def get_all_rated_whiskeys(cls, data, filters):
+        query_conditions = []
+        for key, value in filters.items():
+            if value and value.lower() != 'all':
+                query_conditions.append(f"{key} = '{value}'")
+            if not query_conditions:
+                query = f"SELECT * from ratings JOIN whiskeys on whiskeys.id = whiskey_id  JOIN users on whiskeys.user_id = users.id WHERE ratings.User_id = {data['id']} ORDER BY rating {data['sort_order']};"
+            else:
+                query_conditions_str = ' AND '.join(query_conditions)
+                query = f"SELECT * from ratings JOIN whiskeys on whiskeys.id = whiskey_id  JOIN users on whiskeys.user_id = users.id WHERE ratings.User_id = {data['id']} AND {query_conditions_str} ORDER BY rating {data['sort_order']};"
         results = connectToMySQL('whiskeydb').query_db(query, data)
         all_whiskeys = []
         for row in results:
