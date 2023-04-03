@@ -20,10 +20,27 @@ a {
   height: 250px;
 }
 
-.card-animation {
-  animation: slideFromRight 1s ease-out;
+.card:hover {
+  position: relative;
+  z-index: 1;
+  transform-origin: center center;
 }
 
-.card-description {
-  max-width: 300px;
+.card:hover::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: inherit;
+  border-radius: inherit;
+  box-shadow: inherit;
+  z-index: -1;
+  transform: scale(1.05);
+  transition: transform 0.3s ease-out;
+}
+
+.card-animation {
+  animation: slideFromRight 1s ease-out;
 }

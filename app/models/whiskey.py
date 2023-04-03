@@ -22,15 +22,36 @@ class Whiskey:
     
     
     @classmethod
-    def get_whiskeys(cls, data):
-        query = f"select round(avg(rating), 1) rating, whiskey_id, whiskeys.name, whiskeys.category, whiskeys.distillery, whiskeys.age, whiskeys.created_at, whiskeys.updated_at, whiskeys.user_id, whiskeys.abv from ratings join whiskeys on whiskeys.id = whiskey_id group by whiskey_id ORDER by rating {data['sort_order']};"
-        results = connectToMySQL('whiskeydb').query_db(query, data)
+    def get_whiskeys(cls, data, filters, search=None ):
+        query_conditions = []
+
+        # Iterate over the filters and add them to the query_conditions list
+        if filters:
+            for key, value in filters.items():
+                if value and value.lower() != 'all':
+                    query_conditions.append(f"{key} = '{value}'")
+
+        # If a search term is provided, add a LIKE condition to the query_conditions list
+        if search:
+            search_term = f"%{search}%"
+            query_conditions.append(f"whiskeys.name LIKE '{search_term}'")
+
+        # If there are any conditions in the query_conditions list, create the SQL query with the conditions
+        if query_conditions:
+            query_conditions_str = ' AND '.join(query_conditions)
+            query = f"SELECT round(avg(rating), 1) rating, whiskey_id, whiskeys.name, whiskeys.category, whiskeys.distillery, whiskeys.age, whiskeys.created_at, whiskeys.updated_at, whiskeys.user_id, whiskeys.abv FROM whiskeys LEFT JOIN ratings ON whiskey_id = whiskeys.id WHERE {query_conditions_str} GROUP BY whiskeys.id ORDER BY rating {data['sort_order']};"
+        else:
+            query = f"SELECT round(avg(rating), 1) rating, whiskey_id, whiskeys.name, whiskeys.category, whiskeys.distillery, whiskeys.age, whiskeys.created_at, whiskeys.updated_at, whiskeys.user_id, whiskeys.abv FROM whiskeys LEFT JOIN ratings ON whiskey_id = whiskeys.id GROUP BY whiskeys.id ORDER BY rating {data['sort_order']};"
+
+        results = connectToMySQL('whiskeydb').query_db(query) 
         all_whiskeys = []
         for row in results:
             row["id"] = row["whiskey_id"]
             one_whiskey = cls(row)
             all_whiskeys.append(one_whiskey)
         return all_whiskeys
+    
+    
     
     @classmethod
     def get_all_rated_whiskeys(cls, data, filters):

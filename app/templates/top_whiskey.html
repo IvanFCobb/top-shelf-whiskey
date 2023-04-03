@@ -1,56 +1,88 @@
 {% extends "base.html" %} {% block title %}MyShelf{% endblock %} {% block
 content %}
 <section id="catagories" class="p-2 xl:p-4">
-  <form
-    method="get"
-    action="/myshelf"
-    class="mb-4 w-56 mt-10 ml-2 mr-10 xl:mx-10 text-white bg-slate-500 hover:bg-slate-600 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300"
-  >
-    <div class="form-group">
-      <label class="py-2 text-sm dark:text-gray-200" for="sort"
-        >Sort by rating:</label
-      >
-      <select
-        class="py-2 text-sm text-gray-700 dark:text-gray-200"
-        name="sort"
-        id="sort"
-        onchange="this.form.submit()"
-      >
-        <option
-          class="block px-4 py-2 hover:bg-gray-100"
-          value="desc"
-          {%
-          if
-          sort_by_rating
-          %}selected{%
-          endif
-          %}
+  <div class="flex flex-wrap justify-center xl:justify-start">
+    <form
+      method="get"
+      action="/topwhiskey"
+      class="mb-4 w-fit ml-2 mr-10 mt-10 xl:mx-10 text-white bg-slate-500 hover:bg-slate-600 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300"
+    >
+      <input
+        type="hidden"
+        name="category"
+        value="{{ request.args.get('category', 'All') }}"
+      />
+
+      <div class="form-group">
+        <label class="py-2 text-sm dark:text-gray-200" for="sort"
+          >Sort by rating:</label
         >
-          High-Low
-        </option>
-        <option
-          class="block px-4 py-2 hover:bg-gray-100"
-          value="asc"
-          {%
-          if
-          not
-          sort_by_rating
-          %}selected{%
-          endif
-          %}
+        <select
+          class="py-2 text-sm text-gray-700 dark:text-gray-200 rounded-lg"
+          name="sort"
+          id="sort"
+          onchange="this.form.submit()"
         >
-          Low-High
-        </option>
-      </select>
-    </div>
-  </form>
+          <option
+            class="block px-4 py-2 hover:bg-gray-100"
+            value="desc"
+            {%
+            if
+            sort_by_rating
+            %}selected{%
+            endif
+            %}
+          >
+            High-Low
+          </option>
+          <option
+            class="block px-4 py-2 hover:bg-gray-100"
+            value="asc"
+            {%
+            if
+            not
+            sort_by_rating
+            %}selected{%
+            endif
+            %}
+          >
+            Low-High
+          </option>
+        </select>
+      </div>
+    </form>
+
+    <form method="get" action="/topwhiskey" class="mb-4 w-fit ml-2 mr-10 mt-10 xl:mx-10 text-white bg-slate-500 hover:bg-slate-600 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300">
+      <input type="hidden" name="sort" value="{{ request.args.get('sort', 'desc') }}">
+    
+      <div class="form-group">
+        <label class="py-2 text-sm dark:text-gray-200" for="category">Filter by category:</label>
+        <select class="py-2 text-sm text-gray-700 dark:text-gray-200 rounded-lg" name="category" id="category" onchange="this.form.submit()">
+          {% for category in categories %}
+            <option class="block px-4 py-2 hover:bg-gray-100" value="{{ category }}" {% if request.args.get("category", "All") == category %}selected{% endif %}>{{ category }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </form>
+
+    <form method="get" action="/topwhiskey" class="mb-4 w-fit ml-2 mr-10 mt-10 xl:mx-10 text-white bg-slate-500 hover:bg-slate-600 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300">
+      <div class="form-group">
+        <label class="py-2 text-sm dark:text-gray-200" for="search">Search:</label>
+        <input type="hidden" name="category" value="{{ current_category }}" />
+        <input type="hidden" name="sort_order" value="{{ current_sort_order }}" />
+        <input class="py-2 px-2 text-sm text-gray-700 dark:text-gray-200 rounded-lg" type="text" name="search" id="search" value="{{ request.args.get('search', '') }}" />
+        <button type="submit" class="ml-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">Go</button>
+      </div>
+    </form>
+    
+  </div>
 </section>
 <section class="p-2 xl:p-4 flex flex-col items-start xl:flex-row">
   <div id="whiskey-cards" class="flex flex-wrap justify-start xl:ml-8">
     {% for whiskey in whiskeys %}
     <a
       href="/whiskey/{{whiskey.id}}"
-      class="card flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-gray-200 hover:scale-125"
+      class="card flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-gray-200"
     >
       <img
         class="object-contain rounded-t-lg h-40 w-20 rounded-none rounded-l-lg ml-1"
