@@ -2,6 +2,7 @@ from app.config.mysqlconnection import connectToMySQL
 from flask import flash
 from app.models import user
 from app.models import rating
+from app.models import comment
 
 
 class Whiskey:

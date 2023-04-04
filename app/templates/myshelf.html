@@ -93,7 +93,7 @@ content %}
           Top Whiskeys
         </h5>
         <p class="mb-3 font-semibold text-gray-700 dark:text-gray-400">
-          got checkout the top rated whiskeys and add them to your shelf by
+          Go checkout the top rated whiskeys and add them to your shelf by
           rating the ones you have tried.
         </p>
       </div>
@@ -121,7 +121,7 @@ content %}
     >
       <img
         class="object-contain rounded-t-lg h-40 w-20 rounded-none rounded-l-lg ml-1"
-        src="{{url_for('static',filename='images/placeholder_whiskey.png')}}"
+        src="{{ image_urls[whiskey.id] }}"
         alt=""
       />
       <div class="flex flex-col justify-between p-4 leading-normal">
@@ -146,7 +146,7 @@ content %}
   >
     <h2 class="text-4xl text-center font-bold">Recently Rated</h2>
     {% if whiskeys|length < 1 %}
-    <h1 class="mt-4">You havent rated any whiskey yet.</h1>
+    <h1 class="mt-4">You haven't rated any whiskey yet</h1>
 
     {% endif %} {% for whiskey in recent %}
     <a
@@ -155,7 +155,7 @@ content %}
     >
       <img
         class="object-contain rounded-t-lg h-40 w-20 rounded-none rounded-l-lg"
-        src="{{url_for('static',filename='images/placeholder_whiskey.png')}}"
+        src="{{ image_urls[whiskey.id] }}"
         alt=""
       />
       <div class="flex flex-col justify-between p-4 leading-normal">

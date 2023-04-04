@@ -14,11 +14,21 @@ app.config['UPLOAD_FOLDER'] = 'app/static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
+# Helper function to check if the whiskey image exists
+def image_exists(image_path):
+    return os.path.isfile(image_path)
+
+
+# Function to handle file upload
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif', 'svg'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 
 # Helper function to check if the file has an allowed extension
 def allowed_file(filename):
-        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 
@@ -59,7 +69,15 @@ def topwhiskey():
     search = request.args.get('search', None)
     whiskeys = Whiskey.get_whiskeys(data, filters, search)
     user = User.get_by_id(data)
-    return render_template("top_whiskey.html", sort_by_rating=sort_by_rating, whiskeys=whiskeys, user=user, categories = categories)
+    image_urls = {}
+    for whiskey in whiskeys:
+        whiskey_id_str = str(whiskey.id)
+        image_path = os.path.join('app', 'static', 'uploads', whiskey_id_str + '.jpg')
+        if image_exists(image_path):
+            image_urls[whiskey.id] = url_for('static', filename='uploads/' + whiskey_id_str + '.jpg')
+        else:
+            image_urls[whiskey.id] = url_for('static', filename='images/placeholder_whiskey.png')
+    return render_template("top_whiskey.html", sort_by_rating=sort_by_rating, whiskeys=whiskeys, user=user, categories = categories, image_urls = image_urls)
 
 
 
@@ -90,13 +108,19 @@ def myshelf():
     }
 
     categories = ["All", "Bourbon", "Scotch", "Irish", "Japanese", "Canadian", "Other"]
-
     recent = Whiskey.get_recently_rated_whiskeys(data)
     search = request.args.get('search', None)
     whiskeys = Whiskey.get_all_rated_whiskeys(data, filters, search)
     user = User.get_by_id(data)
-    
-    return render_template("myshelf.html", sort_by_rating=sort_by_rating, whiskeys=whiskeys, user=user, recent = recent, categories = categories)
+    image_urls = {}
+    for whiskey in whiskeys:
+        whiskey_id_str = str(whiskey.id)
+        image_path = os.path.join('app', 'static', 'uploads', whiskey_id_str + '.jpg')
+        if image_exists(image_path):
+            image_urls[whiskey.id] = url_for('static', filename='uploads/' + whiskey_id_str + '.jpg')
+        else:
+            image_urls[whiskey.id] = url_for('static', filename='images/placeholder_whiskey.png')
+    return render_template("myshelf.html", sort_by_rating=sort_by_rating, whiskeys=whiskeys, user=user, recent=recent, categories=categories, image_urls=image_urls)
 
 
 
@@ -113,7 +137,12 @@ def create_whiskey_view():
 
 
 
-# Route for displaying a single whiskey entry
+# Function to handle file upload
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif', 'svg'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# Updated route for displaying a single whiskey entry
 @app.route('/whiskey/<int:num>', methods=['GET', 'POST'])
 def one_whiskey(num):
     if 'user_id' not in session:
@@ -128,20 +157,43 @@ def one_whiskey(num):
     
     user = User.get_by_id(data)
     whiskey = Whiskey.get_whiskey_with_user_rating(data, whiskey_data)
+    whiskey_id_str = str(whiskey.id)
+    image_urls = {}
+    image_path = os.path.join('app', 'static', 'uploads', whiskey_id_str + '.jpg')
+    if image_exists(image_path):
+        image_urls[whiskey.id] = url_for('static', filename='uploads/' + whiskey_id_str + '.jpg')
+    else:
+        image_urls[whiskey.id] = url_for('static', filename='images/placeholder_whiskey.png')
+            
     if request.method == 'POST':
         whiskey_data = {
-            "rating": request.form['rating'],
             "user_id": session['user_id'],
             "whiskey_id": num
         }
-        if whiskey.rating.rating == None:
-            Rating.save(whiskey_data)
-            return redirect(url_for('one_whiskey', num=num))
-        else:
-            Rating.edit(whiskey_data)
-            return redirect(url_for('one_whiskey', num=num))
-    print(whiskey.id)
-    return render_template("whiskey.html", user=user, whiskey=whiskey)
+        if 'rating' in request.form:
+            whiskey_data["rating"] = request.form['rating']
+            if whiskey.rating.rating == None:
+                Rating.save(whiskey_data)
+            else:
+                Rating.edit(whiskey_data)
+
+        if 'image' in request.files:
+            image = request.files['image']
+            if image and allowed_file(image.filename):
+                file_name = num
+                file_type = secure_filename(image.filename.rsplit('.', 1)[1].lower())
+                
+                # Save the uploaded image file to the specified path
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{file_name}.{file_type}")
+                image.save(file_path)
+                
+                # Compress and save the image
+                compress_and_save_image(file_path)
+
+        return redirect(url_for('one_whiskey', num=num))
+        
+    return render_template("whiskey.html", user=user, whiskey=whiskey, image_urls=image_urls)
+
 
 
 
@@ -197,8 +249,24 @@ def new_whiskey():
         
         # Check if a file was selected
         if file.filename == '':
-            flash('No selected file', "register")
-            return redirect("/whiskeys/new")
+            data = {
+                "name": request.form['name'],
+                "category": request.form['category'],
+                "distillery": request.form['distillery'],
+                "age": request.form['age'],
+                "abv": request.form['abv'],
+                "user_id": session['user_id']
+            }
+            Rating.save(data)
+            whiskey_id = Whiskey.save(data)
+            rating_data = {
+                "whiskey_id": whiskey_id,
+                "rating" : request.form['rating'],
+                "user_id" : session['user_id']
+            }
+            Rating.save(rating_data)
+            return redirect("/myshelf")
+        
         
         # If a file was selected and it has an allowed file extension, proceed with saving the entry
         if file and allowed_file(file.filename):
