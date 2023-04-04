@@ -53,6 +53,8 @@ class User:
         return connectToMySQL('whiskeydb').query_db(query, data)
     
 
+
+
     
     
     @staticmethod

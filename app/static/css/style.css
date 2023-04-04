@@ -39,6 +39,7 @@ a {
   z-index: -1;
   transform: scale(1.05);
   transition: transform 0.3s ease-out;
+  border: 2px solid rgb(84, 132, 155);
 }
 
 .card-animation {

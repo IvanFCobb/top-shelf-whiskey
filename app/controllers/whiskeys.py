@@ -1,16 +1,19 @@
 import os
 from app.models.user import User
 from app.models.whiskey import Whiskey
+from app.models.rating import Rating
 from app import app
 from PIL import Image
 from flask import render_template, redirect, request, session, flash, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 
 
+
 # Configure upload settings and allowed file extensions
 app.config['UPLOAD_FOLDER'] = 'app/static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
 
 
 # Helper function to check if the file has an allowed extension
@@ -56,8 +59,8 @@ def topwhiskey():
     search = request.args.get('search', None)
     whiskeys = Whiskey.get_whiskeys(data, filters, search)
     user = User.get_by_id(data)
-    
     return render_template("top_whiskey.html", sort_by_rating=sort_by_rating, whiskeys=whiskeys, user=user, categories = categories)
+
 
 
 # Route for displaying user's whiskey shelf
@@ -89,10 +92,13 @@ def myshelf():
     categories = ["All", "Bourbon", "Scotch", "Irish", "Japanese", "Canadian", "Other"]
 
     recent = Whiskey.get_recently_rated_whiskeys(data)
-    whiskeys = Whiskey.get_all_rated_whiskeys(data, filters)
+    search = request.args.get('search', None)
+    whiskeys = Whiskey.get_all_rated_whiskeys(data, filters, search)
     user = User.get_by_id(data)
     
     return render_template("myshelf.html", sort_by_rating=sort_by_rating, whiskeys=whiskeys, user=user, recent = recent, categories = categories)
+
+
 
 # Route for displaying the form to create a new whiskey entry
 @app.route('/whiskeys/new')
@@ -106,18 +112,37 @@ def create_whiskey_view():
     return render_template("create_whiskey.html", user=user)
 
 
+
 # Route for displaying a single whiskey entry
-@app.route('/whiskeys/<int:num>')
+@app.route('/whiskey/<int:num>', methods=['GET', 'POST'])
 def one_whiskey(num):
     if 'user_id' not in session:
         return redirect ("/")
     data = {
         "id": session['user_id']
     }
+    
+    whiskey_data = {
+        "id": num,
+    }
+    
     user = User.get_by_id(data)
-    whiskey = whiskey.get_by_id_with_creator(num)
-    purchases = len(whiskey.number_of_purchases)
-    return render_template("view_whiskey.html", user=user, whiskey=whiskey, purchases = purchases)
+    whiskey = Whiskey.get_whiskey_with_user_rating(data, whiskey_data)
+    if request.method == 'POST':
+        whiskey_data = {
+            "rating": request.form['rating'],
+            "user_id": session['user_id'],
+            "whiskey_id": num
+        }
+        if whiskey.rating.rating == None:
+            Rating.save(whiskey_data)
+            return redirect(url_for('one_whiskey', num=num))
+        else:
+            Rating.edit(whiskey_data)
+            return redirect(url_for('one_whiskey', num=num))
+    print(whiskey.id)
+    return render_template("whiskey.html", user=user, whiskey=whiskey)
+
 
 
 # Route for displaying the form to edit a whiskey entry
@@ -129,8 +154,8 @@ def whiskey_edit(num):
         "id": session['user_id']
     }
     user = User.get_by_id(data)
-    whiskey = whiskey.get_by_id_with_creator(num)
-    if whiskey.user_id != session['user_id']:
+    whiskey = Whiskey.get_by_id_with_creator(num)
+    if whiskey.User_id != session['user_id']:
         return redirect("/whiskeys") 
     
     session["whiskey_id"] = whiskey.id

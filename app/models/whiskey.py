@@ -1,6 +1,7 @@
 from app.config.mysqlconnection import connectToMySQL
 from flask import flash
 from app.models import user
+from app.models import rating
 
 
 class Whiskey:
@@ -14,9 +15,8 @@ class Whiskey:
         self.created_at = data['created_at']
         self.updated_at = data['updated_at']
         self.user_id = data['user_id']
-        self.rating = data['rating']
         self.creator = None
-        self.users_who_rated = []
+        self.rating = None
         self.number_of_ratings = []
         
     
@@ -39,32 +39,52 @@ class Whiskey:
         # If there are any conditions in the query_conditions list, create the SQL query with the conditions
         if query_conditions:
             query_conditions_str = ' AND '.join(query_conditions)
-            query = f"SELECT round(avg(rating), 1) rating, whiskey_id, whiskeys.name, whiskeys.category, whiskeys.distillery, whiskeys.age, whiskeys.created_at, whiskeys.updated_at, whiskeys.user_id, whiskeys.abv FROM whiskeys LEFT JOIN ratings ON whiskey_id = whiskeys.id WHERE {query_conditions_str} GROUP BY whiskeys.id ORDER BY rating {data['sort_order']};"
+            query = f"SELECT round(avg(rating), 1) rating, whiskey_id, whiskeys.name, whiskeys.category, whiskeys.distillery, whiskeys.age, whiskeys.created_at, whiskeys.updated_at, whiskeys.user_id, whiskeys.abv, whiskeys.id FROM whiskeys LEFT JOIN ratings ON whiskey_id = whiskeys.id WHERE {query_conditions_str} GROUP BY whiskeys.id ORDER BY rating {data['sort_order']};"
         else:
-            query = f"SELECT round(avg(rating), 1) rating, whiskey_id, whiskeys.name, whiskeys.category, whiskeys.distillery, whiskeys.age, whiskeys.created_at, whiskeys.updated_at, whiskeys.user_id, whiskeys.abv FROM whiskeys LEFT JOIN ratings ON whiskey_id = whiskeys.id GROUP BY whiskeys.id ORDER BY rating {data['sort_order']};"
+            query = f"SELECT round(avg(rating), 1) rating, whiskey_id, whiskeys.name, whiskeys.category, whiskeys.distillery, whiskeys.age, whiskeys.created_at, whiskeys.updated_at, whiskeys.user_id, whiskeys.abv, whiskeys.id FROM whiskeys LEFT JOIN ratings ON whiskey_id = whiskeys.id GROUP BY whiskeys.id ORDER BY rating {data['sort_order']};"
 
         results = connectToMySQL('whiskeydb').query_db(query) 
         all_whiskeys = []
         for row in results:
-            row["id"] = row["whiskey_id"]
             one_whiskey = cls(row)
+            one_whiskeys_rating_info = {
+                "id": row['id'], 
+                "rating": row['rating'], 
+                "whiskey_id": row['whiskey_id'],
+                "user_id": row['user_id'],
+                "created_at": row['created_at'],
+                "updated_at": row['updated_at'],
+            }
+            userRating = rating.Rating(one_whiskeys_rating_info)
+            one_whiskey.rating = userRating
             all_whiskeys.append(one_whiskey)
         return all_whiskeys
     
     
     
     @classmethod
-    def get_all_rated_whiskeys(cls, data, filters):
+    def get_all_rated_whiskeys(cls, data, filters, search=None):
         query_conditions = []
-        for key, value in filters.items():
-            if value and value.lower() != 'all':
-                query_conditions.append(f"{key} = '{value}'")
-            if not query_conditions:
-                query = f"SELECT * from ratings JOIN whiskeys on whiskeys.id = whiskey_id  JOIN users on whiskeys.user_id = users.id WHERE ratings.User_id = {data['id']} ORDER BY rating {data['sort_order']};"
-            else:
-                query_conditions_str = ' AND '.join(query_conditions)
-                query = f"SELECT * from ratings JOIN whiskeys on whiskeys.id = whiskey_id  JOIN users on whiskeys.user_id = users.id WHERE ratings.User_id = {data['id']} AND {query_conditions_str} ORDER BY rating {data['sort_order']};"
-        results = connectToMySQL('whiskeydb').query_db(query, data)
+
+        # Iterate over the filters and add them to the query_conditions list
+        if filters:
+            for key, value in filters.items():
+                if value and value.lower() != 'all':
+                    query_conditions.append(f"{key} = '{value}'")
+
+        # If a search term is provided, add a LIKE condition to the query_conditions list
+        if search:
+            search_term = f"%{search}%"
+            query_conditions.append(f"whiskeys.name LIKE '{search_term}'")
+
+        # If there are any conditions in the query_conditions list, create the SQL query with the conditions
+        if query_conditions:
+            query_conditions_str = ' AND '.join(query_conditions)
+            query = f"SELECT * from ratings JOIN whiskeys on whiskeys.id = whiskey_id  JOIN users on whiskeys.user_id = users.id WHERE ratings.User_id = {data['id']} AND {query_conditions_str} ORDER BY rating {data['sort_order']};"
+        else:
+            query = f"SELECT * from ratings JOIN whiskeys on whiskeys.id = whiskey_id  JOIN users on whiskeys.user_id = users.id WHERE ratings.User_id = {data['id']} ORDER BY rating {data['sort_order']};"
+
+        results = connectToMySQL('whiskeydb').query_db(query) 
         all_whiskeys = []
         for row in results:
             row["id"] = row["whiskey_id"]
@@ -77,10 +97,23 @@ class Whiskey:
                 "created_at": row['users.created_at'],
                 "updated_at": row['users.updated_at'],
             }
+            one_whiskeys_rating_info = {
+                "id": row['id'], 
+                "rating": row['rating'], 
+                "whiskey_id": row['whiskey_id'],
+                "user_id": row['user_id'],
+                "created_at": row['created_at'],
+                "updated_at": row['updated_at'],
+            }
+            userRating = rating.Rating(one_whiskeys_rating_info)
+            one_whiskey.rating = userRating
             creator = user.User(one_whiskeys_creator_info)
             one_whiskey.creator = creator
             all_whiskeys.append(one_whiskey)
         return all_whiskeys
+    
+    
+    
     
     @classmethod
     def get_recently_rated_whiskeys(cls, data):
@@ -100,9 +133,50 @@ class Whiskey:
             }
             creator = user.User(one_whiskeys_creator_info)
             one_whiskey.creator = creator
+            one_whiskeys_rating_info = {
+                "id": row['id'], 
+                "rating": row['rating'], 
+                "whiskey_id": row['whiskey_id'],
+                "user_id": row['user_id'],
+                "created_at": row['created_at'],
+                "updated_at": row['updated_at'],
+            }
+            userRating = rating.Rating(one_whiskeys_rating_info)
+            one_whiskey.rating = userRating
             recent_whiskeys.append(one_whiskey)
         return recent_whiskeys 
     
+    
+    @classmethod
+    def get_whiskey_with_user_rating(cls, data, whiskey_data):
+        query = f"select *, ratings.user_id as rater_id , whiskeys.id as current_whiskey_id from whiskeys left join ratings on whiskeys.id = whiskey_id AND ratings.user_id = {data['id']} left join users on users.id = ratings.user_id where whiskeys.id = {whiskey_data['id']};"
+        results = connectToMySQL('whiskeydb').query_db(query, data)
+        results[0]["id"] = results[0]["current_whiskey_id"]
+        one_whiskey = cls(results[0])
+        one_whiskeys_creator_info = {
+            "id": results[0]['rater_id'], 
+            "username": results[0]['username'],
+            "email": results[0]['email'],
+            "password": results[0]['password'],
+            "created_at": results[0]['users.created_at'],
+            "updated_at": results[0]['users.updated_at'],
+        }
+        one_whiskeys_rating_info = {
+            "id": results[0]['user_id'], 
+            "rating": results[0]['rating'],
+            "user_id": results[0]['user_id'],
+            "whiskey_id": results[0]['whiskey_id'],
+            "created_at": results[0]['users.created_at'],
+            "updated_at": results[0]['users.updated_at'],
+        }
+        creator = user.User(one_whiskeys_creator_info)
+        one_whiskey.creator = creator
+        userRating = rating.Rating(one_whiskeys_rating_info)
+        one_whiskey.rating = userRating
+        
+
+        return  one_whiskey
+
     
     
     @classmethod

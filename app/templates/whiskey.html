@@ -1,0 +1,84 @@
+{% extends "base.html" %} {% block title %}MyShelf{% endblock %} {% block
+content %}
+<section id="whiskey-card" class="p-2 xl:p-4"></section>
+<section class="p-2 xl:p-4 flex flex-col xl:flex-row">
+  <div
+    class="flex flex-row justify-around items-center m-2 p-4 bg-white border border-gray-200 rounded-lg shadow-lg shadow-black w-full"
+  >
+    <div class="flex flex-col justify-between p-4 leading-normal h-full w-full">
+      <h5
+        class="mb-4 text-8xl font-bold tracking-tight text-gray-900 dark:text-white"
+      >
+        {{whiskey.name}}
+      </h5>
+      <p class="mb-3 font-normal text-2xl text-gray-700 dark:text-gray-400">
+        Distillery: {{whiskey.distillery}}
+      </p>
+      <p class="mb-3 font-normal text-2xl text-gray-700 dark:text-gray-400">
+        Category: {{whiskey.category}}
+      </p>
+      <p class="mb-3 font-normal text-2xl text-gray-700 dark:text-gray-400">
+        ABV: {{whiskey.abv}}%
+      </p>
+      <p class="mb-3 font-normal text-2xl text-gray-700 dark:text-gray-400">
+        Rating: {{ whiskey.rating.rating }}
+      </p>
+    </div>
+    <img
+      class="object-contain rounded-t-lg w-60 h-120 rounded-none rounded-l-lg ml-1"
+      src="{{url_for('static',filename='images/placeholder_whiskey.png')}}"
+      alt=""
+    />
+    <div class="flex flex-col justify-between p-4 leading-normal h-full w-full">
+      <form
+        class="mb-8 text-md block text-md max-w-sm p-6 mx-auto mt-6 bg-white border border-gray-200 rounded-lg drop-shadow-lg md:w-full md:text-xl"
+        action="/whiskey/{{whiskey.id}}"
+        method="post"
+      >
+        <div class="mb-6">
+          
+          <label for="rating" class="block mb-2 font-medium text-gray-900"
+            >Rating</label
+          >
+          <input
+            type="number"
+            id="rating"
+            name="rating"
+            class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            value="{{ whiskey.rating.rating }}"
+            required
+          />
+        </div>
+        <div class="mb-6">
+          <label
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            for="image"
+            >Upload Bottle Image</label
+          >
+          <input
+            class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+            aria-describedby="file_input_help"
+            id="image"
+            type="file"
+            name="image"
+          />
+          <p
+            class="mt-1 text-sm text-gray-500 dark:text-gray-300"
+            id="file_input_help"
+          >
+            SVG, PNG, JPG or GIF (MAX. 800x400px).
+          </p>
+        </div>
+
+        <button
+          type="submit"
+          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg w-full sm:w-auto px-5 py-2.5 text-center"
+        >
+          Submit
+        </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

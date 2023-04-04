@@ -65,7 +65,7 @@ content %}
       </div>
     </form>
 
-    <form method="get" action="/topwhiskey" class="mb-4 w-fit ml-2 mr-10 mt-10 xl:mx-10 text-white bg-slate-500 hover:bg-slate-600 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300">
+    <form method="get" action="/myshelf" class="mb-4 w-fit ml-2 mr-10 mt-10 xl:mx-10 text-white bg-slate-500 hover:bg-slate-600 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300">
       <div class="form-group">
         <label class="py-2 text-sm dark:text-gray-200" for="search">Search:</label>
         <input type="hidden" name="category" value="{{ current_category }}" />
@@ -93,7 +93,7 @@ content %}
           Top Whiskeys
         </h5>
         <p class="mb-3 font-semibold text-gray-700 dark:text-gray-400">
-          got chekcout the top rated whiskeys and add them to your shelf by
+          got checkout the top rated whiskeys and add them to your shelf by
           rating the ones you have tried.
         </p>
       </div>
@@ -134,7 +134,7 @@ content %}
           ABV: {{whiskey.abv}}%
         </p>
         <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-          Rating: {{whiskey.rating}}
+          Rating: {{whiskey.rating.rating}}
         </p>
       </div>
     </a>
@@ -142,7 +142,7 @@ content %}
   </div>
   <div
     id="recently-rated"
-    class="flex w-80 flex-col items-center text-end border-4 border-slate-800 rounded-lg bg-slate-300 p-4 my-4 shadow-md shadow-black xl:mr-8 object-contain h-screen"
+    class="flex w-80 flex-col items-center text-end  py-4 px-8 my-4 border-4 border-slate-800 rounded-lg bg-slate-300 shadow-md shadow-black xl:mr-8"
   >
     <h2 class="text-4xl text-center font-bold">Recently Rated</h2>
     {% if whiskeys|length < 1 %}
@@ -151,7 +151,7 @@ content %}
     {% endif %} {% for whiskey in recent %}
     <a
       href="/whiskey/{{whiskey.id}}"
-      class="card flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black "
+      class="card flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg shadow-lg shadow-black "
     >
       <img
         class="object-contain rounded-t-lg h-40 w-20 rounded-none rounded-l-lg"
@@ -168,7 +168,7 @@ content %}
           ABV: {{whiskey.abv}}%
         </p>
         <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-          Rating: {{whiskey.rating}}
+          Rating: {{whiskey.rating.rating}}
         </p>
       </div>
     </a>

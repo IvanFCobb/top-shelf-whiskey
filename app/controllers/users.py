@@ -63,3 +63,4 @@ def register_user():
     else:
         return redirect('/register')
 
+

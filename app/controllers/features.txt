@@ -1,0 +1,27 @@
+Feature List For the Top Shelf Whiskey App:
+
+    1. User Registration: Users can register for an account by providing a username, email, and password. The app validates the input using the "is_valid_user" method and the EMAIL_REGEX pattern for email validation. If the input is valid, the user's password is hashed using Bcrypt, and the user data is saved. The user is then logged in and redirected to their whiskey shelf.
+
+    2. User Login: Users can log in to their accounts by providing their email and password. The app checks if the email exists in the database and verifies the entered password against the stored hashed password using Bcrypt. If the login is successful, the user is redirected to their whiskey shelf; otherwise, an error message is displayed.
+
+    3. Logout: Users can log out of their accounts, which clears the session data and redirects them to the app's main page.
+
+    4. Main Page: The main page serves as the starting point for users to log in, register, or navigate to other app features.
+
+    5. User Authentication: Users must be logged in to access the whiskey management features.
+
+    6. File Upload: Users can upload images of whiskey bottles in PNG, JPG, JPEG, or GIF formats. Images are compressed and saved to a specified directory.
+
+    7. Top Whiskeys: Displays a list of top-rated whiskeys. Users can sort the list in ascending or descending order based on ratings. The list can be filtered by category or distillery and supports a search function.
+
+    8. My Whiskey Shelf: Displays the user's rated whiskeys, sorted and filtered similarly to the Top Whiskeys page. It also shows the user's recently rated whiskeys.
+
+    9. Create New Whiskey Entry: Users can create a new whiskey entry by providing details such as name, category, distillery, age, and ABV (alcohol by volume). Users can also upload an image of the whiskey bottle.
+
+    10. View Whiskey Entry: Displays detailed information about a single whiskey entry, including the user's rating for the whiskey. Users can update their rating directly from this page.
+
+    11. Edit Whiskey Entry: Users can edit whiskey entries they have created. They can modify details such as name, category, distillery, age, and ABV.
+
+    12. Delete Whiskey Entry: Users can delete whiskey entries they have created.
+
+    13. Image Serving: Uploaded images are served from a specified directory.
