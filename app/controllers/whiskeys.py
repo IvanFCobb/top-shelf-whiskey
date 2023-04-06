@@ -2,6 +2,7 @@ import os
 from app.models.user import User
 from app.models.whiskey import Whiskey
 from app.models.rating import Rating
+from app.models.comment import Comment
 from app import app
 from PIL import Image
 from flask import render_template, redirect, request, session, flash, url_for, send_from_directory
@@ -14,9 +15,12 @@ app.config['UPLOAD_FOLDER'] = 'app/static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
+
+
 # Helper function to check if the whiskey image exists
 def image_exists(image_path):
     return os.path.isfile(image_path)
+
 
 
 # Function to handle file upload
@@ -31,8 +35,17 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+# Helper function to find the correct image file with an allowed extension
+def find_image_with_extension(image_folder, image_name):
+    for ext in ALLOWED_EXTENSIONS:
+        file_path = os.path.join(image_folder, f"{image_name}.{ext}")
+        if os.path.isfile(file_path):
+            return file_path
+    return None
 
-# Route for displaying top whiskeys
+
+
+
 @app.route('/topwhiskey', methods=['GET', 'POST'])
 def topwhiskey():
     if 'user_id' not in session:
@@ -65,23 +78,25 @@ def topwhiskey():
         "distillery" : "all"
     }
 
-    categories = ["All", "Bourbon", "Scotch", "Irish", "Japanese", "Canadian", "Other"]
+    categories = ["All", "Bourbon", "Rye", "Scotch", "Irish", "Japanese", "Canadian", "American", "Other"]
     search = request.args.get('search', None)
     whiskeys = Whiskey.get_whiskeys(data, filters, search)
     user = User.get_by_id(data)
     image_urls = {}
     for whiskey in whiskeys:
         whiskey_id_str = str(whiskey.id)
-        image_path = os.path.join('app', 'static', 'uploads', whiskey_id_str + '.jpg')
-        if image_exists(image_path):
-            image_urls[whiskey.id] = url_for('static', filename='uploads/' + whiskey_id_str + '.jpg')
+        image_folder = os.path.join('app', 'static', 'uploads')
+        image_path = find_image_with_extension(image_folder, whiskey_id_str)
+        if image_path:
+            image_ext = image_path.split('.')[-1]
+            image_urls[whiskey.id] = url_for('static', filename=f'uploads/{whiskey_id_str}.{image_ext}')
         else:
             image_urls[whiskey.id] = url_for('static', filename='images/placeholder_whiskey.png')
+
     return render_template("top_whiskey.html", sort_by_rating=sort_by_rating, whiskeys=whiskeys, user=user, categories = categories, image_urls = image_urls)
 
 
 
-# Route for displaying user's whiskey shelf
 @app.route('/myshelf', methods=['GET', 'POST'])
 def myshelf():
     if 'user_id' not in session:
@@ -115,16 +130,17 @@ def myshelf():
     image_urls = {}
     for whiskey in whiskeys:
         whiskey_id_str = str(whiskey.id)
-        image_path = os.path.join('app', 'static', 'uploads', whiskey_id_str + '.jpg')
-        if image_exists(image_path):
-            image_urls[whiskey.id] = url_for('static', filename='uploads/' + whiskey_id_str + '.jpg')
+        image_folder = os.path.join('app', 'static', 'uploads')
+        image_path = find_image_with_extension(image_folder, whiskey_id_str)
+        if image_path:
+            image_ext = image_path.split('.')[-1]
+            image_urls[whiskey.id] = url_for('static', filename=f'uploads/{whiskey_id_str}.{image_ext}')
         else:
             image_urls[whiskey.id] = url_for('static', filename='images/placeholder_whiskey.png')
     return render_template("myshelf.html", sort_by_rating=sort_by_rating, whiskeys=whiskeys, user=user, recent=recent, categories=categories, image_urls=image_urls)
 
 
 
-# Route for displaying the form to create a new whiskey entry
 @app.route('/whiskeys/new')
 def create_whiskey_view():
     if 'user_id' not in session:
@@ -142,7 +158,7 @@ def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif', 'svg'}
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Updated route for displaying a single whiskey entry
+
 @app.route('/whiskey/<int:num>', methods=['GET', 'POST'])
 def one_whiskey(num):
     if 'user_id' not in session:
@@ -160,11 +176,17 @@ def one_whiskey(num):
     whiskey_id_str = str(whiskey.id)
     image_urls = {}
     image_path = os.path.join('app', 'static', 'uploads', whiskey_id_str + '.jpg')
-    if image_exists(image_path):
-        image_urls[whiskey.id] = url_for('static', filename='uploads/' + whiskey_id_str + '.jpg')
+    whiskey_id_str = str(whiskey.id)
+    image_folder = os.path.join('app', 'static', 'uploads')
+    image_path = find_image_with_extension(image_folder, whiskey_id_str)
+    if image_path:
+        image_ext = image_path.split('.')[-1]
+        image_urls[whiskey.id] = url_for('static', filename=f'uploads/{whiskey_id_str}.{image_ext}')
     else:
         image_urls[whiskey.id] = url_for('static', filename='images/placeholder_whiskey.png')
-            
+    
+    comments = Comment.get_comments_by_whiskey_id(whiskey_data)
+    
     if request.method == 'POST':
         whiskey_data = {
             "user_id": session['user_id'],
@@ -191,13 +213,14 @@ def one_whiskey(num):
                 compress_and_save_image(file_path)
 
         return redirect(url_for('one_whiskey', num=num))
-        
-    return render_template("whiskey.html", user=user, whiskey=whiskey, image_urls=image_urls)
+    return render_template("whiskey.html", user=user, whiskey=whiskey, image_urls=image_urls, comments=comments)
 
 
 
 
-# Route for displaying the form to edit a whiskey entry
+
+
+
 @app.route('/whiskeys/edit/<int:num>')
 def whiskey_edit(num):
     if 'user_id' not in session:
@@ -214,7 +237,6 @@ def whiskey_edit(num):
     return render_template("edit_whiskey.html", user=user, whiskey=whiskey)
 
 
-# Route for deleting a whiskey entry
 @app.route('/whiskeys/delete/<int:num>')
 def whiskey_delete(num):
     if 'user_id' not in session:
@@ -230,7 +252,6 @@ def compress_and_save_image(file_path):
     img.save(file_path)
 
 
-# Route for creating a new whiskey entry with form data
 @app.route('/create_whiskey', methods=["POST"])
 def new_whiskey():
     # Check if the user is logged in
@@ -291,26 +312,21 @@ def new_whiskey():
             # Compress and save the image
             compress_and_save_image(file_path)
             
-            # Redirect to the user's whiskey shelf
             return redirect('/myshelf')
         else:
-            # If the file has an invalid format, display an error message and redirect to the whiskey creation form
             flash('Invalid file format', "register")
             return redirect('/whiskeys/new')
     else: 
-        # If the form data is invalid, redirect to the whiskey creation form
         return redirect('/whiskeys/new')
     
 
 
-# Route for serving uploaded files
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
     
     
     
-# Route for editing a whiskey entry with form data
 @app.route('/edit_whiskey', methods=["POST"])
 def edit_whiskey():
     if 'user_id' not in session:

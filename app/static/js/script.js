@@ -1,46 +1,99 @@
-$(function () {
-  $(".toggle-menu").click(function () {
-    $(".navbar-menu").toggleClass("hidden");
+// Nav Dropdown menu
+document.addEventListener("DOMContentLoaded", function () {
+  var toggleButton = document.getElementById("toggleButton");
+  var navbarMenu = document.getElementById("navbarMenu");
+
+  toggleButton.addEventListener("click", function () {
+    navbarMenu.classList.toggle("hidden");
+  });
+
+  document.addEventListener("click", function (event) {
+    if (
+      !toggleButton.contains(event.target) &&
+      !navbarMenu.contains(event.target)
+    ) {
+      navbarMenu.classList.add("hidden");
+    }
   });
 });
 
-// script for animating the cards on load
+// Comment Dropdown menu
 
-function isElementInViewport(el) {
-  const rect = el.getBoundingClientRect();
+document.addEventListener("DOMContentLoaded", function () {
+  const dropdownToggles = document.querySelectorAll("[data-dropdown-toggle]");
 
-  return (
-    rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <=
-      (window.innerHeight || document.documentElement.clientHeight) &&
-    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-  );
+  dropdownToggles.forEach((toggle) => {
+    toggle.addEventListener("click", function () {
+      const target = document.getElementById(this.dataset.dropdownToggle);
+      if (target) {
+        closeAllDropdownsExcept(target);
+        target.classList.toggle("hidden");
+      }
+    });
+  });
+
+  window.addEventListener("click", function (event) {
+    if (!event.target.matches("[data-dropdown-toggle]")) {
+      closeAllDropdowns();
+    }
+  });
+});
+
+function closeAllDropdowns() {
+  const dropdowns = document.getElementsByClassName("dropdown-content");
+  for (let i = 0; i < dropdowns.length; i++) {
+    const openDropdown = dropdowns[i];
+    if (!openDropdown.classList.contains("hidden")) {
+      openDropdown.classList.add("hidden");
+    }
+  }
 }
 
-function animateCards() {
-  const cards = document.querySelectorAll(".card");
+function closeAllDropdownsExcept(exceptDropdown) {
+  const dropdowns = document.getElementsByClassName("dropdown-content");
+  for (let i = 0; i < dropdowns.length; i++) {
+    const openDropdown = dropdowns[i];
+    if (
+      openDropdown !== exceptDropdown &&
+      !openDropdown.classList.contains("hidden")
+    ) {
+      openDropdown.classList.add("hidden");
+    }
+  }
+}
 
-  cards.forEach((card) => {
-    if (isElementInViewport(card)) {
-      card.style.opacity = "1";
+// reply to comment
+document.addEventListener("DOMContentLoaded", function () {
+  const replyButtons = document.querySelectorAll(".replyButton");
 
-      card.style.transform = "translateX(0)";
+  replyButtons.forEach((button) => {
+    button.addEventListener("click", function (event) {
+      event.preventDefault();
+      const formID = this.dataset.formId;
+      const targetForm = document.getElementById(formID);
+
+      if (targetForm) {
+        closeAllReplyFormsExcept(targetForm);
+        targetForm.classList.toggle("hidden");
+      }
+    });
+  });
+});
+
+function closeAllReplyForms() {
+  const replyForms = document.querySelectorAll(".replyForm");
+  replyForms.forEach((form) => {
+    if (!form.classList.contains("hidden")) {
+      form.classList.add("hidden");
     }
   });
 }
 
-window.addEventListener("scroll", animateCards);
-window.addEventListener("load", animateCards);
-
-// Dropdown menu
-
-document.addEventListener("DOMContentLoaded", () => {
-  const dropdownMenu = document.getElementById("dropdownMenu");
-  const submitButton = document.getElementById("submitButton");
-
-  dropdownMenu.addEventListener("change", (e) => {
-    submitButton.textContent = e.target.options[e.target.selectedIndex].text;
-    document.getElementById("myForm").submit();
+function closeAllReplyFormsExcept(exceptForm) {
+  const replyForms = document.querySelectorAll(".replyForm");
+  replyForms.forEach((form) => {
+    if (form !== exceptForm && !form.classList.contains("hidden")) {
+      form.classList.add("hidden");
+    }
   });
-});
+}

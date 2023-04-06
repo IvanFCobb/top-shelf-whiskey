@@ -18,7 +18,6 @@ class Whiskey:
         self.user_id = data['user_id']
         self.creator = None
         self.rating = None
-        self.number_of_ratings = []
         
     
     
@@ -150,12 +149,12 @@ class Whiskey:
     
     @classmethod
     def get_whiskey_with_user_rating(cls, data, whiskey_data):
-        query = f"select *, ratings.user_id as rater_id , whiskeys.id as current_whiskey_id from whiskeys left join ratings on whiskeys.id = whiskey_id AND ratings.user_id = {data['id']} left join users on users.id = ratings.user_id where whiskeys.id = {whiskey_data['id']};"
+        query = f"select *, ratings.user_id as rater_id , whiskeys.id as current_whiskey_id, whiskeys.user_id as whiskey_creator  from whiskeys left join ratings on whiskeys.id = whiskey_id AND ratings.user_id = {data['id']} left join users on users.id = ratings.user_id where whiskeys.id = {whiskey_data['id']};"
         results = connectToMySQL('whiskeydb').query_db(query, data)
         results[0]["id"] = results[0]["current_whiskey_id"]
         one_whiskey = cls(results[0])
         one_whiskeys_creator_info = {
-            "id": results[0]['rater_id'], 
+            "id": results[0]['whiskey_creator'], 
             "username": results[0]['username'],
             "email": results[0]['email'],
             "password": results[0]['password'],

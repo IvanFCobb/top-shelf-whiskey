@@ -45,3 +45,7 @@ a {
 .card-animation {
   animation: slideFromRight 1s ease-out;
 }
+
+#whiskey_hero {
+  min-height: 572px;
+}

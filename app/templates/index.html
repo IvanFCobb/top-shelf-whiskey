@@ -16,15 +16,16 @@
     <title>Top Shelf Whiskey</title>
   </head>
   <body class="">
-    <nav class="bg-gray-900 px-4 py-3">
+    <nav class="bg-gray-900 px-8 py-3">
       <div class="flex items-center justify-between">
         <div>
-          <a href="#" class="text-white font-bold">Top Shelf Whiskey</a>
+          <a href="/" class="text-white font-bold">Top Shelf Whiskey</a>
         </div>
         <div class="flex md:hidden">
           <button
             type="button"
             class="toggle-menu text-white hover:text-gray-300 focus:outline-none focus:text-gray-300"
+            id="toggleButton"
           >
             <img
               class="w-5"
@@ -35,17 +36,29 @@
         </div>
         <div class="hidden md:flex">
           <ul class="flex space-x-4 text-gray-300">
-            <li><a href="/">Home</a></li>
-            <li><a href="/myshelf">About</a></li>
-            <li><a href="#">Contact</a></li>
+            {%if logged_in%}
+            <li><a href="/myshelf">My Shelf</a></li>
+            <li><a href="/topwhiskey">Top Whiskey</a></li>
+            <li><a href="/whiskeys/new">Add Whiskey</a></li>
+            <li><a href="/logout">Logout</a></li>
+            {%else%}
+            <li><a href="/login">Login</a></li>
+            <li><a href="/register">Sign Up</a></li>
+            {%endif%}
           </ul>
         </div>
       </div>
-      <div class="navbar-menu hidden md:hidden">
-        <ul class="flex flex-col space-y-4 text-gray-300">
-          <li><a href="#">Home</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact</a></li>
+      <div class="navbar-menu hidden md:hidden" id="navbarMenu">
+        <ul class="flex mt-4 flex-col space-y-4 text-gray-300">
+          {%if logged_in%}
+          <li><a href="/myshelf">My Shelf</a></li>
+          <li><a href="/topwhiskey">Top Whiskey</a></li>
+          <li><a href="/whiskeys/new">Add Whiskey</a></li>
+          <li><a href="/logout">Logout</a></li>
+          {%else%}
+          <li><a href="/login">Login</a></li>
+          <li><a href="/register">Sign Up</a></li>
+          {%endif%}
         </ul>
       </div>
     </nav>
@@ -63,6 +76,18 @@
         </h4>
       </div>
       <div class="container flex justify-evenly align-middle my-10 col-span-3">
+        {%if logged_in%}
+        <a
+          class="rounded-full h-14 w-fit flex-none text-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium text-lg px-5 py-3 glow"
+          href="/myshelf"
+          >My Shelf</a
+        >
+        <a
+          class="rounded-full h-14 w-fit flex-none text-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium text-lg px-5 py-3 glow"
+          href="/topwhiskey"
+          >Top Whiskey</a
+        >
+        {%else%}
         <a
           class="rounded-full h-14 w-28 flex-none text-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium text-lg px-5 py-3 glow"
           href="/login"
@@ -73,6 +98,7 @@
           href="/register"
           >Sign Up</a
         >
+        {%endif%}
       </div>
       <div class="container mr-10 my-auto col-span-2">
         <h4

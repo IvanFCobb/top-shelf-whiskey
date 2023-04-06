@@ -1,34 +1,39 @@
 {% extends "base.html" %} {% block title %}MyShelf{% endblock %} {% block
 content %}
-<section id="whiskey-card" class="p-2 xl:p-4"></section>
-<section class="p-2 xl:p-4 flex flex-col xl:flex-row">
+<section id="whiskey_hero" class="p-2 xl:p-4 flex flex-col xl:flex-row">
   <div
-    class="flex flex-row justify-around items-center m-2 p-4 bg-white border border-gray-200 rounded-lg shadow-lg shadow-black w-full"
+    class="flex flex-col xl:flex-row justify-around items-center m-2 p-4 bg-white border border-gray-200 rounded-lg shadow-lg shadow-black xl:w-full"
   >
-    <div class="flex flex-col justify-between p-4 leading-normal h-full w-full">
+    <div class="flex flex-col p-4 leading-normal h-full w-full">
       <h5
-        class="mb-4 text-8xl font-bold tracking-tight text-gray-900 dark:text-white"
+        class=" text-4xl font-bold tracking-tight text-gray-900 mb-2"
       >
         {{whiskey.name}}
       </h5>
-      <p class="mb-3 font-normal text-2xl text-gray-700 dark:text-gray-400">
-        Distillery: {{whiskey.distillery}}
+      <hr class="mb-8">
+      <p class="mb-3 font-normal text-2xl text-gray-500 ">
+        <span class="font-semibold">Distillery:</span> {{whiskey.distillery}}
       </p>
-      <p class="mb-3 font-normal text-2xl text-gray-700 dark:text-gray-400">
-        Category: {{whiskey.category}}
+      <p class="mb-3 font-normal text-2xl text-gray-500 ">
+        <span class="font-semibold">Category:</span> {{whiskey.category}}
       </p>
-      <p class="mb-3 font-normal text-2xl text-gray-700 dark:text-gray-400">
-        ABV: {{whiskey.abv}}%
+      <p class="mb-3 font-normal text-2xl text-gray-500 ">
+        <span class="font-semibold">AGE:</span> {{whiskey.age}}
       </p>
-      <p class="mb-3 font-normal text-2xl text-gray-700 dark:text-gray-400">
-        Rating: {{ whiskey.rating.rating }}
+      <p class="mb-3 font-normal text-2xl text-gray-500 ">
+        <span class="font-semibold">ABV:</span> {{whiskey.abv}}%
+      </p>
+      <p class="mb-3 font-normal text-2xl text-gray-500 ">
+        <span class="font-semibold">Rating:</span> {{ whiskey.rating.rating }}
       </p>
     </div>
+    <div class="border  h-full w-full flex justify-center">
     <img
-      class="object-contain rounded-t-lg w-60 h-120 rounded-none rounded-l-lg ml-1"
+      class="object-contain rounded-t-lg w-60 h-120 rounded-none rounded-l-lg m-1"
       src="{{ image_urls[whiskey.id] }}"
       alt=""
     />
+  </div>
     <div class="flex flex-col justify-between p-4 leading-normal h-full w-full">
       <form
         class="mb-8 text-md block text-md max-w-sm p-6 mx-auto mt-6 bg-white border border-gray-200 rounded-lg drop-shadow-lg md:w-full md:text-xl"
@@ -50,26 +55,30 @@ content %}
             required
           />
         </div>
+        {% if whiskey.creator.id == user.id%}
         <div class="mb-6">
           <label
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            class="block mb-2 text-sm font-medium text-gray-900 "
             for="image"
             >Upload Bottle Image (Public Image)</label
           >
           <input
-            class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+            class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50  focus:outline-none   d"
             aria-describedby="file_input_help"
             id="image"
             type="file"
             name="image"
           />
           <p
-            class="mt-1 text-sm text-gray-500 dark:text-gray-300"
+            class="mt-1 text-sm text-gray-500 "
             id="file_input_help"
           >
             SVG, PNG, JPG or GIF (MAX. 800x400px).
           </p>
+          <p class="text-sm mt-4 text-red-400"
+          >Only a admin can change an image once uploaded</p>
         </div>
+        {% endif %}
 
         <button
           type="submit"
@@ -82,40 +91,40 @@ content %}
     </div>
   </div>
 </section>
-<section class="bg-white dark:bg-gray-900 py-8 lg:py-16">
-  <div class="max-w-2xl mx-auto px-4">
+<section class="bg-white  py-8 lg:py-16">
+  <div class="max-w-4xl mx-auto px-4">
       <div class="flex justify-between items-center mb-6">
-        <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Discussion (20)</h2>
+        <h2 class="text-lg lg:text-2xl font-bold text-gray-900 ">Discussion (20)</h2>
     </div>
     <form class="mb-6"
           action="/comment/{{whiskey.id}}"
           method="post">
-        <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+        <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200  ">
             <label for="comment" class="sr-only">Your comment</label>
-            <textarea id="comment" rows="6"
-                class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+            <textarea id="comment" rows="6" name="comment"
+                class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none  d "
                 placeholder="Write a comment..." required></textarea>
         </div>
         <button type="submit"
-            class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center bg-blue-700 hover:bg-blue-800 text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+            class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center bg-blue-700 hover:bg-blue-800 text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200  hover:bg-primary-800">
             Post comment
         </button>
     </form>
     {% for comment in comments %}
-    <article class="p-6 mb-6 text-base bg-white rounded-lg dark:bg-gray-900">
-        <footer class="flex justify-between items-center mb-2">
-            <div class="flex items-center">
-                <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white"><img
-                        class="mr-2 w-6 h-6 rounded-full"
-                        src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
-                        alt="Michael Gough">Michael Gough</p>
-                <p class="text-sm text-gray-600 dark:text-gray-400"><time pubdate datetime="2022-02-08"
-                        title="February 8th, 2022">Feb. 8, 2022</time></p>
+    <article class="p-4 text-base bg-white rounded-lg border border-gray-500 mb-4">
+      
+        <header class="">
+          <div class="flex justify-between items-center mb-4 relative">
+            <div class="flex items-end text-end">
+                <span class="mr-5 text-lg font-semibold text-gray-900">{{ comment.creator.username }}</span>
+                <span class="text-lg text-gray-600 "><time pubdate datetime="{{ comment.created_at }}"
+                        title="{{ comment.created_at }}">{{ comment.created_at.strftime('%a, %B %d')}}</time></span>
             </div>
-            <button id="dropdownComment1Button" data-dropdown-toggle="dropdownComment1"
-                class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                type="button">
-                <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+            <div class="cursor-pointer">
+            <button id="dropdownComment{{ comment.id }}Button" data-dropdown-toggle="dropdownComment{{ comment.id }}"
+      class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50"
+      type="button">
+                <svg class="w-5 h-5 pointer-events-none" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z">
@@ -123,37 +132,102 @@ content %}
                 </svg>
                 <span class="sr-only">Comment settings</span>
             </button>
+          </div>
             <!-- Dropdown menu -->
-            <div id="dropdownComment1"
-                class="hidden z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
-                <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
+            <div id="dropdownComment{{ comment.id }}"
+      class="dropdown-content hidden origin-top-right right-0 z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow absolute top-full">
+                <ul class="py-1 text-sm text-gray-700"
                     aria-labelledby="dropdownMenuIconHorizontalButton">
+                    {% if comment.creator.id == user.id %}
                     <li>
-                        <a href="#"
-                            class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
+                        <a href="/comment/delete/{{ whiskey.id }}/{{ comment.id }}"
+                            class="block py-2 px-4 hover:bg-gray-100 ">Remove</a>
                     </li>
+                    {% endif %}
                     <li>
                         <a href="#"
-                            class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Remove</a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Report</a>
+                            class="block py-2 px-4 hover:bg-gray-100 ">Report</a>
                     </li>
                 </ul>
             </div>
-        </footer>
-        <p class="text-gray-500 dark:text-gray-400">Very straight-to-point article. Really worth time reading. Thank you! But tools are just the
-            instruments for the UX designers. The knowledge of the design tools are as important as the
-            creation of the design strategy.</p>
-        <div class="flex items-center mt-4 space-x-4">
+          </div>
+            <hr class="h-px bg-gray-200 border-0 mb-6">
+        </header>
+        
+
+
+        <p class="text-gray-500 ">{{ comment.comment }}</p>
+        <div class="flex items-center mt-8 space-x-4">
             <button type="button"
-                class="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400">
+            class="flex items-center text-sm text-gray-500 hover:underline replyButton"
+            data-form-id="replyForm{{ comment.id }}">
                 <svg aria-hidden="true" class="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                 Reply
             </button>
         </div>
     </article>
+    <form id="replyForm{{ comment.id }}" class="replyForm hidden mb-6"
+      action="/reply/{{whiskey.id}}/{{comment.id}}"
+      method="post">
+  <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200  ">
+    <label for="reply{{ comment.id }}" class="sr-only">Your reply</label>
+    <textarea id="reply{{ comment.id }}" rows="4" name="content"
+        class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none  d "
+        placeholder="Write a reply..." required></textarea>
+  </div>
+  <button type="submit"
+      class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center bg-blue-700 hover:bg-blue-800 text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200  hover:bg-primary-800">
+    Post reply
+  </button>
+</form>
+    {% for reply in comment.replies %}
+    <article class="p-4 text-base bg-white rounded-lg border border-gray-500 mb-4 ml-12">
+      
+        <header class="">
+          <div class="flex justify-between items-center mb-4 relative">
+            <div class="flex items-end text-end">
+                <span class="mr-5 text-lg font-semibold text-gray-900">{{ reply.creator.username }}</span>
+                <span class="text-lg text-gray-600 "><time pubdate datetime="{{ reply.created_at }}"
+                        title="{{ reply.created_at }}">{{ reply.created_at.strftime('%a, %B %d')}}</time></span>
+            </div>
+            <div class="cursor-pointer">
+            <button id="dropdownreply{{ reply.id }}Button" data-dropdown-toggle="dropdownreply{{ reply.id }}"
+      class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50"
+      type="button">
+                <svg class="w-5 h-5 pointer-events-none" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z">
+                    </path>
+                </svg>
+                <span class="sr-only">Reply settings</span>
+            </button>
+          </div>
+            <!-- Dropdown menu -->
+            <div id="dropdownreply{{ reply.id }}"
+      class="dropdown-content hidden origin-top-right right-0 z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow absolute top-full">
+                <ul class="py-1 text-sm text-gray-700"
+                    aria-labelledby="dropdownMenuIconHorizontalButton">
+                    {% if reply.creator.id == user.id %}
+                    <li>
+                        <a href="/reply/delete/{{ whiskey.id }}/{{ reply.id }}"
+                            class="block py-2 px-4 hover:bg-gray-100 ">Remove</a>
+                    </li>
+                    {% endif %}
+                    <li>
+                        <a href="#"
+                            class="block py-2 px-4 hover:bg-gray-100 ">Report</a>
+                    </li>
+                </ul>
+            </div>
+          </div>
+            <hr class="h-px bg-gray-200 border-0 mb-6">
+        </header>
+        <p class="text-gray-500 ">{{ reply.content }}</p>
+        
+    </article>
+    <hr class="mb-6 border-gray-500">
+    {% endfor %}
     {% endfor %}
 </section>
 {% endblock %}
