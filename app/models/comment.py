@@ -63,3 +63,9 @@ class Comment:
         return connectToMySQL("whiskeydb").query_db(query, data)
 
 
+    @classmethod
+    def delete_all_whiskey_comments(cls, data):
+        query = """DELETE FROM comments
+                WHERE comments.whiskey_id = %(id)s;"""
+        return connectToMySQL("whiskeydb").query_db(query, data)
+

@@ -11,6 +11,9 @@ EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 bcrypt = Bcrypt(app)
 
 
+
+
+
 @app.route('/')
 def index():
     if 'user_id' in session:
@@ -20,9 +23,6 @@ def index():
     return render_template("index.html", logged_in=logged_in)
 
 
-@app.route('/register')
-def register():
-    return render_template("register.html")
 
 @app.route('/login')
 def login():
@@ -49,6 +49,12 @@ def login_user():
 def logout():
     session.clear()
     return redirect("/")
+
+
+
+@app.route('/register')
+def register():
+    return render_template("register.html")
 
 
 

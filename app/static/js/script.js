@@ -97,3 +97,15 @@ function closeAllReplyFormsExcept(exceptForm) {
     }
   });
 }
+
+// delete whiskey confirmation
+function openModal(id, action) {
+  console.log(`modal-${id}-${action}`);
+  const modal = document.getElementById(`modal-${id}-${action}`);
+  modal.style.display = "block";
+}
+
+function closeModal(id, action) {
+  const modal = document.getElementById(`modal-${id}-${action}`);
+  modal.style.display = "none";
+}

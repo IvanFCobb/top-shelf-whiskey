@@ -3,6 +3,7 @@ from app.models.user import User
 from app.models.whiskey import Whiskey
 from app.models.rating import Rating
 from app.models.comment import Comment
+from app.models.reply import Reply
 from app import app
 from PIL import Image
 from flask import render_template, redirect, request, session, flash, url_for, send_from_directory
@@ -28,11 +29,6 @@ def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif', 'svg'}
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
-
-# Helper function to check if the file has an allowed extension
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 # Helper function to find the correct image file with an allowed extension
@@ -66,13 +62,11 @@ def topwhiskey():
         else:
             sort_order = 'desc'
             
-    # Prepare data for the query
     data = {
         "id": session['user_id'],
         "sort_order": sort_order
     }
     
-    # Set filters for the whiskey list
     filters = {
         "category" : request.args.get("category", "all"),
         "distillery" : "all"
@@ -83,6 +77,7 @@ def topwhiskey():
     whiskeys = Whiskey.get_whiskeys(data, filters, search)
     user = User.get_by_id(data)
     image_urls = {}
+    
     for whiskey in whiskeys:
         whiskey_id_str = str(whiskey.id)
         image_folder = os.path.join('app', 'static', 'uploads')
@@ -113,10 +108,12 @@ def myshelf():
             sort_order = 'asc'
         else:
             sort_order = 'desc'
+            
     data = {
         "id": session['user_id'],
         "sort_order": sort_order
     }
+    
     filters = {
         "category" : request.args.get("category", "all"),
         "distillery" : "all"
@@ -128,6 +125,7 @@ def myshelf():
     whiskeys = Whiskey.get_all_rated_whiskeys(data, filters, search)
     user = User.get_by_id(data)
     image_urls = {}
+    
     for whiskey in whiskeys:
         whiskey_id_str = str(whiskey.id)
         image_folder = os.path.join('app', 'static', 'uploads')
@@ -137,6 +135,7 @@ def myshelf():
             image_urls[whiskey.id] = url_for('static', filename=f'uploads/{whiskey_id_str}.{image_ext}')
         else:
             image_urls[whiskey.id] = url_for('static', filename='images/placeholder_whiskey.png')
+            
     return render_template("myshelf.html", sort_by_rating=sort_by_rating, whiskeys=whiskeys, user=user, recent=recent, categories=categories, image_urls=image_urls)
 
 
@@ -145,18 +144,14 @@ def myshelf():
 def create_whiskey_view():
     if 'user_id' not in session:
         return redirect ("/")
+    
     data = {
         "id": session['user_id']
     }
+    
     user = User.get_by_id(data)
     return render_template("create_whiskey.html", user=user)
 
-
-
-# Function to handle file upload
-def allowed_file(filename):
-    ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif', 'svg'}
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route('/whiskey/<int:num>', methods=['GET', 'POST'])
@@ -221,19 +216,21 @@ def one_whiskey(num):
 
 
 
-@app.route('/whiskeys/edit/<int:num>')
-def whiskey_edit(num):
+@app.route('/whiskey/edit/<int:whiskey_id>', methods=['POST'])
+def whiskey_edit(whiskey_id):
     if 'user_id' not in session:
         return redirect ("/")
     data = {
         "id": session['user_id']
     }
+    whiskey_data = {
+        "id": whiskey_id
+        }
     user = User.get_by_id(data)
-    whiskey = Whiskey.get_by_id_with_creator(num)
-    if whiskey.User_id != session['user_id']:
-        return redirect("/whiskeys") 
+    whiskey = Whiskey.get_whiskey_with_user_rating(data, whiskey_data)
+
     
-    session["whiskey_id"] = whiskey.id
+    session["whiskey_id"] = whiskey_id
     return render_template("edit_whiskey.html", user=user, whiskey=whiskey)
 
 
@@ -278,7 +275,6 @@ def new_whiskey():
                 "abv": request.form['abv'],
                 "user_id": session['user_id']
             }
-            Rating.save(data)
             whiskey_id = Whiskey.save(data)
             rating_data = {
                 "whiskey_id": whiskey_id,
@@ -301,9 +297,19 @@ def new_whiskey():
                 "user_id": session['user_id']
             }
             
+            
+            
             # Save the whiskey entry and get the generated file name
             file_name = Whiskey.save(data)
             file_type = secure_filename(file.filename.rsplit('.', 1)[1].lower())
+            
+            rating_data = {
+                "whiskey_id": file_name,
+                "rating" : request.form['rating'],
+                "user_id" : session['user_id']
+            }
+            
+            Rating.save(rating_data)
             
             # Save the uploaded image file to the specified path
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{file_name}.{file_type}")
@@ -327,23 +333,53 @@ def uploaded_file(filename):
     
     
     
-@app.route('/edit_whiskey', methods=["POST"])
-def edit_whiskey():
+@app.route('/whiskey/<int:whiskey_id>/edit', methods=["POST"])
+def edit_whiskey(whiskey_id):
     if 'user_id' not in session:
         return redirect ("/")
     if Whiskey.is_valid_whiskey(request.form): 
         data = {
-            "id": session["whiskey_id"],
-            "title": request.form['title'],
-            "description": request.form['description'],
-            "price": request.form['price'],
-            "quantity": request.form['quantity'],
-            "user_id": session['user_id']
-        }
+                "id": whiskey_id,
+                "name": request.form['name'],
+                "category": request.form['category'],
+                "distillery": request.form['distillery'],
+                "age": request.form['age'],
+                "abv": request.form['abv'],
+                "user_id": session['user_id']
+            }
         Whiskey.edit(data)
         session.pop('whiskey_id', default=None)
-        return redirect("/whiskeys")
+        return redirect("/whiskey/{}".format(whiskey_id))
     else:
         return redirect("/whiskeys/edit/{}".format(session["whiskey_id"]))
+
+
+@app.route('/whiskey/<int:whiskey_id>/delete', methods=["POST"])
+def remove_whiskey(whiskey_id):
+    if 'user_id' not in session:
+        return redirect ("/")
+    data = {
+        "id": whiskey_id,
+        "user_id": session['user_id']
+    }
+    whiskey = Whiskey.get_whiskey_with_user_rating(data, data)
+    if session['user_id'] != whiskey.creator.id:
+        return redirect ("/topwhiskey")
+    data = {
+        "id": whiskey_id,
+        "user_id": session['user_id']
+    }
+    comments = Comment.get_comments_by_whiskey_id(data)
+    for comment in comments:
+        comment_data = {
+            "comment_id": comment.id
+            }
+        Reply.delete_comment(comment_data)
+    Comment.delete_all_whiskey_comments(data)
+    Rating.delete_all_for_one_whiskey(data)
+    Whiskey.delete(data)
+    return redirect("/topwhiskey")
+
+
 
 

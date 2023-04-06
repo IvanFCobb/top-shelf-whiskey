@@ -80,9 +80,9 @@ class Whiskey:
         # If there are any conditions in the query_conditions list, create the SQL query with the conditions
         if query_conditions:
             query_conditions_str = ' AND '.join(query_conditions)
-            query = f"SELECT * from ratings JOIN whiskeys on whiskeys.id = whiskey_id  JOIN users on whiskeys.user_id = users.id WHERE ratings.User_id = {data['id']} AND {query_conditions_str} ORDER BY rating {data['sort_order']};"
+            query = f"SELECT *, whiskeys.user_id as whiskey_creator from ratings JOIN whiskeys on whiskeys.id = whiskey_id  JOIN users on whiskeys.user_id = users.id WHERE ratings.User_id = {data['id']} AND {query_conditions_str} ORDER BY rating {data['sort_order']};"
         else:
-            query = f"SELECT * from ratings JOIN whiskeys on whiskeys.id = whiskey_id  JOIN users on whiskeys.user_id = users.id WHERE ratings.User_id = {data['id']} ORDER BY rating {data['sort_order']};"
+            query = f"SELECT *, whiskeys.user_id as whiskey_creator from ratings JOIN whiskeys on whiskeys.id = whiskey_id  JOIN users on whiskeys.user_id = users.id WHERE ratings.User_id = {data['id']} ORDER BY rating {data['sort_order']};"
 
         results = connectToMySQL('whiskeydb').query_db(query) 
         all_whiskeys = []
@@ -90,7 +90,7 @@ class Whiskey:
             row["id"] = row["whiskey_id"]
             one_whiskey = cls(row)
             one_whiskeys_creator_info = {
-                "id": row['user_id'], 
+                "id": row['whiskey_creator'], 
                 "username": row['username'],
                 "email": row['email'],
                 "password": row['password'],
@@ -117,14 +117,14 @@ class Whiskey:
     
     @classmethod
     def get_recently_rated_whiskeys(cls, data):
-        query = f"select * from ratings join whiskeys on whiskeys.id = whiskey_id  join users on whiskeys.user_id = users.id where ratings.User_id = {data['id']} ORDER BY ratings.updated_at DESC LIMIT 4;"
+        query = f"select *, whiskeys.user_id as whiskey_creator from ratings join whiskeys on whiskeys.id = whiskey_id  join users on whiskeys.user_id = users.id where ratings.User_id = {data['id']} ORDER BY ratings.updated_at DESC LIMIT 4;"
         results = connectToMySQL('whiskeydb').query_db(query, data)
         recent_whiskeys = []
         for row in results:
             row["id"] = row["whiskey_id"]
             one_whiskey = cls(row)
             one_whiskeys_creator_info = {
-                "id": row['user_id'], 
+                "id": row['whiskey_creator'], 
                 "username": row['username'],
                 "email": row['email'],
                 "password": row['password'],
@@ -174,34 +174,32 @@ class Whiskey:
         userRating = rating.Rating(one_whiskeys_rating_info)
         one_whiskey.rating = userRating
         
-
         return  one_whiskey
 
     
     
     @classmethod
     def save(cls, data):
-        query = "INSERT INTO whiskeys ( name, category, distillery, age, abv, user_id) VALUES ( %(name)s, %(category)s, %(distillery)s, %(age)s, %(abv)s, %(user_id)s);"
+        query = """INSERT INTO whiskeys ( name, category, distillery, age, abv, user_id) 
+                   VALUES ( %(name)s, %(category)s, %(distillery)s, %(age)s, %(abv)s, %(user_id)s);"""
         return connectToMySQL('whiskeydb').query_db(query, data)
     
     
     
     @classmethod
     def edit(cls, data):
-        query = "UPDATE whiskeys SET title = %(title)s, description = %(description)s, price = %(price)s, quantity = %(quantity)s, updated_at = now() WHERE (id = {});".format(
-            data["id"])
+        query = """UPDATE whiskeys 
+                   SET name = %(name)s, category = %(category)s, distillery = %(distillery)s, age = %(age)s, abv = %(abv)s, user_id = %(user_id)s 
+                   WHERE (id = %(id)s);"""
         return connectToMySQL('whiskeydb').query_db(query, data)
     
     
     
     @classmethod
-    def delete(cls, num):
-        query_ratings = "DELETE FROM ratings WHERE (whiskey_id = {});".format(
-            num)
-        query = "DELETE FROM whiskeys WHERE (id = {});".format(
-            num)
-        connectToMySQL('whiskeys').query_db(query_ratings)
-        return connectToMySQL('whiskeydb').query_db(query)
+    def delete(cls, data):
+        query = """DELETE FROM whiskeys 
+                   WHERE (id = %(id)s);"""
+        return connectToMySQL('whiskeydb').query_db(query, data)
        
     
 

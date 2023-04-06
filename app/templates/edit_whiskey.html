@@ -1,22 +1,22 @@
-{% extends "base.html" %} {% block title %}MyShelf{% endblock %} {% block
+{% extends "base.html" %} {% block title %}Edit Whiskey{% endblock %} {% block
 content %}
 <section class="mt-8">
   <div class="flex flex-col justify-center xl:flex-row">
     <form
       class="mb-8 text-md block text-md max-w-sm p-6 mx-auto mt-6 bg-white border border-gray-200 rounded-lg drop-shadow-lg md:w-full md:text-xl"
-      action="/create_whiskey"
+      action="/whiskey/{{ whiskey.id }}/edit"
       method="post"
       enctype="multipart/form-data"
     >
       <div class="">
         {% with register_messages = get_flashed_messages(with_categories=True,
-        category_filter='register') %} {% if register_messages %}
-        <ul class="text-danger">
-          {% for category, message in register_messages %}
-          <li class="text-red-600">{{ message }}</li>
-          {% endfor %}
-        </ul>
-        {% endif %} {% endwith %}
+          category_filter='register') %} {% if register_messages %}
+          <ul class="text-danger">
+            {% for category, message in register_messages %}
+            <li class="text-red-600">{{ message }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %} {% endwith %}
 
         <div class="mb-6">
           <label
@@ -27,17 +27,19 @@ content %}
           <select
             id="category"
             name="category"
+            value="{{ whiskey.category }}"
             class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           >
-            <option selected>Choose a category</option>
-            <option value="bourbon">Bourbon</option>
-            <option value="rye">Rye</option>
-            <option value="scotch">Scotch</option>
-            <option value="irish">Irish</option>
-            <option value="canadian">Canadian</option>
-            <option value="japanese ">Japanese</option>
-            <option value="american ">American</option>
-            <option value="other ">Other</option>
+            <option disabled selected>Choose a category</option>
+            <option value="bourbon" {% if whiskey.category == 'bourbon' %}selected{% endif %}>Bourbon</option>
+            <option value="rye" {% if whiskey.category == 'rye' %}selected{% endif %}>Rye</option>
+            <option value="scotch" {% if whiskey.category == 'scotch' %}selected{% endif %}>Scotch</option>
+            <option value="irish" {% if whiskey.category == 'irish' %}selected{% endif %}>Irish</option>
+            <option value="canadian" {% if whiskey.category == 'canadian' %}selected{% endif %}>Canadian</option>
+            <option value="japanese" {% if whiskey.category == 'japanese' %}selected{% endif %}>Japanese</option>
+            <option value="american" {% if whiskey.category == 'american' %}selected{% endif %}>American</option>
+            <option value="other" {% if whiskey.category == 'other' %}selected{% endif %}>Other</option>
+        
           </select>
         </div>
         <div class="mb-6">
@@ -48,9 +50,8 @@ content %}
             type="text"
             id="name"
             name="name"
-            class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 caret-black"
-            placeholder="name"
-            required
+            class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 caret-black "
+            value="{{ whiskey.name }}"
           />
         </div>
 
@@ -65,7 +66,7 @@ content %}
             id="distillery"
             name="distillery"
             class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 caret-black"
-            placeholder="distillery"
+            value="{{ whiskey.distillery }}"
           />
         </div>
         <div class="mb-6">
@@ -77,7 +78,7 @@ content %}
             id="age"
             name="age"
             class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 caret-black"
-            required
+            value="{{ whiskey.age }}"
           />
         </div>
         <div class="mb-6">
@@ -90,7 +91,7 @@ content %}
             name="abv"
             class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 caret-black"
             step=".1"
-            required
+            value="{{ whiskey.abv }}"
           />
         </div>
         <div class="mb-6">
@@ -101,8 +102,8 @@ content %}
             type="number"
             id="rating"
             name="rating"
+            value="{{ whiskey.rating.rating }}"
             class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 caret-black"
-            required
           />
         </div>
         <div class="mb-6">

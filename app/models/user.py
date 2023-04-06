@@ -46,17 +46,7 @@ class User:
         return connectToMySQL('whiskeydb').query_db(query, data)
 
 
-    
-    @classmethod
-    def add_rating(cls, data):
-        query = "INSERT INTO rates (user_id, whiskey_id) VALUES ( %(user_id)s, %(whiskey_id)s);"
-        return connectToMySQL('whiskeydb').query_db(query, data)
-    
 
-
-
-    
-    
     @staticmethod
     def is_valid_user(data):
         is_valid = True

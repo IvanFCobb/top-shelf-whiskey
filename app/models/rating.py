@@ -27,3 +27,8 @@ class Rating:
         return connectToMySQL('whiskeydb').query_db(query, data)
 
 
+    @classmethod
+    def delete_all_for_one_whiskey(cls, data):
+        query = """DELETE FROM ratings
+                WHERE ratings.whiskey_id = %(id)s;"""
+        return connectToMySQL("whiskeydb").query_db(query, data)

@@ -1,7 +1,5 @@
 from app.config.mysqlconnection import connectToMySQL
-from app.models import whiskey
 from app.models import user
-from app.models import rating
 
 
 class Reply:
@@ -20,7 +18,7 @@ class Reply:
     @classmethod
     def get_replies_by_comment_id(cls, data):
         query = """SELECT replies.*, users.id AS user_id, users.username AS username, users.email AS email,
-                   users.password AS password, users.created_at AS user_created_at, users.updated_at AS user_updated_at, replies.user_id as reply_creator
+                          users.password AS password, users.created_at AS user_created_at, users.updated_at AS user_updated_at, replies.user_id as reply_creator
                    FROM replies
                    JOIN users ON replies.user_id = users.id
                    JOIN comments ON replies.comment_id = comments.id
