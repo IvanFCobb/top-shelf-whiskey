@@ -10,7 +10,7 @@ content %}
     >
       <div class="">
         {% with register_messages = get_flashed_messages(with_categories=True,
-        category_filter='register') %} {% if register_messages %}
+        category_filter='whiskey') %} {% if register_messages %}
         <ul class="text-danger">
           {% for category, message in register_messages %}
           <li class="text-red-600">{{ message }}</li>
@@ -37,6 +37,7 @@ content %}
             <option value="canadian">Canadian</option>
             <option value="japanese ">Japanese</option>
             <option value="american ">American</option>
+            <option value="tennessee ">Tennessee</option>
             <option value="other ">Other</option>
           </select>
         </div>
@@ -77,7 +78,6 @@ content %}
             id="age"
             name="age"
             class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 caret-black"
-            required
           />
         </div>
         <div class="mb-6">

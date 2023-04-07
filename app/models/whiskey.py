@@ -216,8 +216,8 @@ class Whiskey:
             flash("Price Required", "whiskey")
             is_valid = False
         if len(data['age']) > 0:
-            if float(data['age']) <= 0:
-                flash("Price must be greater than 0", "whiskey")
+            if float(data['age']) < 0:
+                flash("Price must be a positive number. 0 for non age-stated", "whiskey")
                 is_valid = False
         if len(data['abv']) < 1:
             flash("Quantity Required", "whiskey")

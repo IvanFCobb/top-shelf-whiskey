@@ -72,13 +72,14 @@ def topwhiskey():
         "distillery" : "all"
     }
 
-    categories = ["All", "Bourbon", "Rye", "Scotch", "Irish", "Japanese", "Canadian", "American", "Other"]
+    categories = ["All", "Bourbon", "Rye", "Scotch", "Irish", "Japanese", "Canadian", "American", "Tennessee", "Other"]
     search = request.args.get('search', None)
     whiskeys = Whiskey.get_whiskeys(data, filters, search)
     user = User.get_by_id(data)
     image_urls = {}
     
     for whiskey in whiskeys:
+        print(whiskey.category)
         whiskey_id_str = str(whiskey.id)
         image_folder = os.path.join('app', 'static', 'uploads')
         image_path = find_image_with_extension(image_folder, whiskey_id_str)
@@ -119,7 +120,7 @@ def myshelf():
         "distillery" : "all"
     }
 
-    categories = ["All", "Bourbon", "Scotch", "Irish", "Japanese", "Canadian", "Other"]
+    categories = ["All", "Bourbon", "Rye", "Scotch", "Irish", "Japanese", "Canadian", "American", "Tennessee", "Other"]
     recent = Whiskey.get_recently_rated_whiskeys(data)
     search = request.args.get('search', None)
     whiskeys = Whiskey.get_all_rated_whiskeys(data, filters, search)

@@ -98,7 +98,7 @@ function closeAllReplyFormsExcept(exceptForm) {
   });
 }
 
-// delete whiskey confirmation
+// delete/edit whiskey confirmation
 function openModal(id, action) {
   console.log(`modal-${id}-${action}`);
   const modal = document.getElementById(`modal-${id}-${action}`);
