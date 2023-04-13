@@ -113,10 +113,10 @@ content %}
   </div>
 </section>
 <section class="p-2 xl:p-4 flex flex-col items-start xl:flex-row">
-  <div id="whiskey-cards" class="flex flex-wrap justify-start xl:ml-8">
+  <div id="whiskey-cards" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 grid-flow-row gap-4 h-full w-full xl:ml-8">
     {% for whiskey in whiskeys %}
     <div
-      class="card flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-gray-200"
+      class="min-h-[16rem] flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-gray-200 hover:scale-105 duration-300"
     >
       <a href="/whiskey/{{whiskey.id}}" class="flex flex-row justify-around w-full">
         <img
@@ -126,7 +126,7 @@ content %}
         />
         <div class="flex flex-col justify-between p-4 leading-normal">
           <h5
-            class="mb-4 break-all text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+            class="mb-4 break-words text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
           >
             {{whiskey.name}}
           </h5>

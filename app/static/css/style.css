@@ -16,7 +16,7 @@ a {
   }
 }
 
-.card {
+/* .card {
   width: 300px;
   height: 250px;
 }
@@ -41,7 +41,7 @@ a {
   transform: scale(1.05);
   transition: transform 0.3s ease-out;
   border: 2px solid rgb(84, 132, 155);
-}
+} */
 
 .card-animation {
   animation: slideFromRight 1s ease-out;

@@ -115,43 +115,46 @@ content %}
 <section
   class="p-2 xl:p-4 flex flex-col justify-between items-start lg:flex-row"
 >
-  <div id="whiskey-cards" class="flex flex-wrap justify-start xl:ml-8">
+  
     {% if whiskeys|length < 1 %}
-    <a
-      href="/topwhiskey"
-      class="card flex flex-row items-center m-3 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:scale-105 duration-300"
-    >
-      <div class="flex flex-col justify-between p-4 leading-normal">
-        <h5
-          class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-        >
-          Top Whiskeys
-        </h5>
-        <p class="mb-3 font-semibold text-gray-700 dark:text-gray-400">
-          Go checkout the top rated whiskeys and add them to your shelf by
-          rating the ones you have tried.
-        </p>
-      </div>
-    </a>
-    <a
-      href="/whiskeys/new"
-      class="card flex flex-row items-center text-start m-3 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:scale-105 duration-300"
-    >
-      <div class="flex flex-col content-between p-4 leading-normal">
-        <h5
-          class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-        >
-          Add a Whiskey
-        </h5>
-        <p class="mb-3 font-semibold text-gray-700 dark:text-gray-400">
-          If you cant find the whiskey you are looking for, you can add it.
-        </p>
-      </div>
-    </a>
-
-    {% endif %} {% for whiskey in whiskeys %}
-    <div
-      class="card flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-gray-200"
+    <div id="whiskey-cards" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-2 grid-flow-row gap-4 h-full w-full xl:ml-8">
+      <a
+        href="/topwhiskey"
+        class="w-full flex flex-row items-center m-3 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:scale-105 duration-300"
+      >
+        <div class="flex flex-col justify-between p-4 leading-normal w-full">
+          <h5
+            class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+          >
+            Top Whiskeys
+          </h5>
+          <p class="mb-3 font-semibold text-gray-700 dark:text-gray-400">
+            Go checkout the top rated whiskeys and add them to your shelf by
+            rating the ones you have tried.
+          </p>
+        </div>
+      </a>
+      <a
+        href="/whiskeys/new"
+        class="w-full flex flex-row items-center text-start m-3 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:scale-105 duration-300"
+      >
+        <div class="flex flex-col content-between p-4 leading-normal">
+          <h5
+            class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+          >
+            Add a Whiskey
+          </h5>
+          <p class="mb-3 font-semibold text-gray-700 dark:text-gray-400">
+            If you cant find the whiskey you are looking for, you can add it.
+          </p>
+        </div>
+      </a>
+    </div>
+      {% endif %}
+      <div id="whiskey-cards" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 grid-flow-row gap-4 h-full w-full xl:ml-8">
+        {% for whiskey in whiskeys %}
+      <div
+      class="min-h-[16rem] flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-gray-200 hover:scale-105 duration-300"
     >
       <a
         href="/whiskey/{{whiskey.id}}"
@@ -164,7 +167,7 @@ content %}
         />
         <div class="flex flex-col justify-between p-4 leading-normal">
           <h5
-            class="mb-4 break-all text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+            class="mb-4 break-words text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
           >
             {{whiskey.name}}
           </h5>
@@ -240,19 +243,22 @@ content %}
   </div>
   <div
     id="recently-rated"
-    class="flex w-80 flex-col items-center text-end py-4 px-8 my-4 border-4 border-slate-800 rounded-lg bg-slate-300 shadow-md shadow-black xl:mr-8"
+    class="flex max-w-md mx-auto flex-col items-center text-end py-4 px-8 my-4 border-4 border-slate-800 rounded-lg bg-slate-300 shadow-md shadow-black xl:mx-8"
   >
     <h2 class="text-4xl text-center font-bold">Recently Rated</h2>
     {% if whiskeys|length < 1 %}
     <h1 class="mt-4">You haven't rated any whiskey yet</h1>
 
-    {% endif %} {% for whiskey in recent %}
+    {% endif %} 
+   <div class="grid grid-cols-1  gap-4 h-full w-full min-w-fit mx-auto"> 
+    {% for whiskey in recent %}
     <div
-      class="card flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-gray-200"
+      class="min-w-fit min-h-[16rem] flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-gray-200 hover:scale-105 duration-300"
     >
       <a
         href="/whiskey/{{whiskey.id}}"
-        class="flex flex-row justify-around w-full"
+        class="flex flex-row justify-around min-w-fit w-full"
+        style="min-width: 250px;"
       >
         <img
           class="object-contain rounded-t-lg h-40 w-20 rounded-none rounded-l-lg ml-1 self-center"
@@ -334,6 +340,7 @@ content %}
       {% endif %}
     </div>
     {% endfor %}
+    </div>
   </div>
 </section>
 {% endblock %}
