@@ -180,8 +180,12 @@ class Whiskey:
     
     @classmethod
     def save(cls, data):
-        query = """INSERT INTO whiskeys ( name, category, distillery, age, abv, user_id) 
-                   VALUES ( %(name)s, %(category)s, %(distillery)s, %(age)s, %(abv)s, %(user_id)s);"""
+        if data["age"] == "":
+            query = """INSERT INTO whiskeys ( name, category, distillery, abv, user_id) 
+                   VALUES ( %(name)s, %(category)s, %(distillery)s, %(abv)s, %(user_id)s);"""
+        else:
+            query = """INSERT INTO whiskeys ( name, category, distillery, age, abv, user_id) 
+                    VALUES ( %(name)s, %(category)s, %(distillery)s, %(age)s, %(abv)s, %(user_id)s);"""
         return connectToMySQL('whiskeydb').query_db(query, data)
     
     

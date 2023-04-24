@@ -16,8 +16,8 @@
     {%block links%}{%endblock%}
     <title>{%block title%}{%endblock%}</title>
   </head>
-  <body>
-    <nav class="bg-gray-900 px-8 py-3">
+  <body class="">
+    <nav class="bg-slate-900 px-8 py-3">
       <div class="flex items-center justify-between">
         <div>
           <a href="/" class="text-white font-bold">Top Shelf Whiskey</a>
@@ -36,7 +36,7 @@
           </button>
         </div>
         <div class="hidden md:flex">
-          <ul class="flex space-x-4 text-gray-300">
+          <ul class="flex space-x-4 text-gray-100">
             <li><a href="/myshelf">My Shelf</a></li>
             <li><a href="/topwhiskey">Top Whiskey</a></li>
             <li><a href="/whiskeys/new">Add Whiskey</a></li>
@@ -45,7 +45,7 @@
         </div>
       </div>
       <div class="navbar-menu hidden md:hidden" id="navbarMenu">
-        <ul class="flex mt-4 flex-col space-y-4 text-gray-300">
+        <ul class="flex mt-4 flex-col space-y-4 text-gray-100">
           <li><a href="/myshelf">My Shelf</a></li>
           <li><a href="/topwhiskey">Top Whiskey</a></li>
           <li><a href="/whiskeys/new">Add Whiskey</a></li>

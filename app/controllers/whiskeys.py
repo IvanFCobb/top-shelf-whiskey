@@ -127,6 +127,17 @@ def myshelf():
     user = User.get_by_id(data)
     image_urls = {}
     
+    for whiskey in recent:
+        whiskey_id_str = str(whiskey.id)
+        image_folder = os.path.join('app', 'static', 'uploads')
+        image_path = find_image_with_extension(image_folder, whiskey_id_str)
+        if image_path:
+
+            image_ext = image_path.split('.')[-1]
+            image_urls[whiskey.id] = url_for('static', filename=f'uploads/{whiskey_id_str}.{image_ext}')
+        else:
+            image_urls[whiskey.id] = url_for('static', filename='images/placeholder_whiskey.png')
+    
     for whiskey in whiskeys:
         whiskey_id_str = str(whiskey.id)
         image_folder = os.path.join('app', 'static', 'uploads')
@@ -176,9 +187,11 @@ def one_whiskey(num):
     image_folder = os.path.join('app', 'static', 'uploads')
     image_path = find_image_with_extension(image_folder, whiskey_id_str)
     if image_path:
+        print("image found")
         image_ext = image_path.split('.')[-1]
         image_urls[whiskey.id] = url_for('static', filename=f'uploads/{whiskey_id_str}.{image_ext}')
     else:
+        print("no image")
         image_urls[whiskey.id] = url_for('static', filename='images/placeholder_whiskey.png')
     
     comments = Comment.get_comments_by_whiskey_id(whiskey_data)

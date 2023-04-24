@@ -51,21 +51,21 @@
       <div class="container">
         <div class="row d-flex justify-content-center">
           <div class="col-md-4 p-4 shadow-card">
-            {% with register_messages =
-            get_flashed_messages(with_categories=True,
-            category_filter='register') %} {% if register_messages %}
-            <ul class="text-danger">
-              {% for category, message in register_messages %}
-              <li class="text-red-600">{{ message }}</li>
-              {% endfor %}
-            </ul>
-            {% endif %} {% endwith %}
             <h2 class="text-center">Sign Up</h2>
             <form
               class="block text-md max-w-sm p-6 mx-auto mt-6 bg-white border border-gray-200 rounded-lg drop-shadow-lg md:max-w-xl md:text-xl"
               action="/register_user"
               method="post"
             >
+              {% with register_messages =
+              get_flashed_messages(with_categories=True,
+              category_filter='register') %} {% if register_messages %}
+              <ul class="text-danger">
+                {% for category, message in register_messages %}
+                <li class="text-red-600 mb-4">{{ message }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %} {% endwith %}
               <div class="mb-6">
                 <label for="username" class="block mb-2 font-wea text-gray-900"
                   >Username:</label

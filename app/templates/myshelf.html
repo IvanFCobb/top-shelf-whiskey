@@ -5,7 +5,7 @@ content %}
     <form
       method="get"
       action="/myshelf"
-      class="mb-4 w-fit ml-2 mr-10 mt-10 xl:mx-10 text-white bg-slate-500 hover:bg-slate-600 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300"
+      class="mb-4 w-fit ml-2 mr-10 mt-10 xl:mx-10 text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300"
     >
       <input
         type="hidden"
@@ -55,7 +55,7 @@ content %}
     <form
       method="get"
       action="/myshelf"
-      class="mb-4 w-fit ml-2 mr-10 mt-10 xl:mx-10 text-white bg-slate-500 hover:bg-slate-600 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300"
+      class="mb-4 w-fit ml-2 mr-10 mt-10 xl:mx-10 text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300"
     >
       <input
         type="hidden"
@@ -76,14 +76,14 @@ content %}
           {% for category in categories %}
           <option class="block px-4 py-2 hover:bg-gray-100" value="{{ category }}" {% if request.args.get("category", "All") == category %}selected{% endif %}>{{ category }}</option>
           {% endfor %}  
-        </select>
+      </select>
       </div>
     </form>
 
     <form
       method="get"
       action="/myshelf"
-      class="mb-4 w-fit ml-2 mr-10 mt-10 xl:mx-10 text-white bg-slate-500 hover:bg-slate-600 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300"
+      class="mb-4 w-fit ml-2 mr-10 mt-10 xl:mx-10 text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300"
     >
       <div class="form-group">
         <label class="py-2 text-sm dark:text-gray-200" for="search"
@@ -115,46 +115,54 @@ content %}
 <section
   class="p-2 xl:p-4 flex flex-col justify-between items-start lg:flex-row"
 >
-  
-    {% if whiskeys|length < 1 %}
-    <div id="whiskey-cards" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-2 grid-flow-row gap-4 h-full w-full xl:ml-8">
-      <a
-        href="/topwhiskey"
-        class="w-full flex flex-row items-center m-3 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:scale-105 duration-300"
-      >
-        <div class="flex flex-col justify-between p-4 leading-normal w-full">
-          <h5
-            class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-          >
-            Top Whiskeys
-          </h5>
-          <p class="mb-3 font-semibold text-gray-700 dark:text-gray-400">
-            Go checkout the top rated whiskeys and add them to your shelf by
-            rating the ones you have tried.
-          </p>
-        </div>
-      </a>
-      <a
-        href="/whiskeys/new"
-        class="w-full flex flex-row items-center text-start m-3 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:scale-105 duration-300"
-      >
-        <div class="flex flex-col content-between p-4 leading-normal">
-          <h5
-            class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-          >
-            Add a Whiskey
-          </h5>
-          <p class="mb-3 font-semibold text-gray-700 dark:text-gray-400">
-            If you cant find the whiskey you are looking for, you can add it.
-          </p>
-        </div>
-      </a>
+  {% if whiskeys|length < 1 %}
+  <div
+      class="min-h-[16rem] w-full flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-[#d4e0d0] hover:scale-105 duration-300"
+    >
+    <a
+      href="/topwhiskey"
+      class="flex flex-row justify-around w-full"
+    >
+      <div class="flex flex-col justify-between p-4 leading-normal w-full">
+        <h5
+          class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+        >
+          Top Whiskeys
+        </h5>
+        <p class="mb-3 font-semibold text-gray-700 dark:text-gray-400">
+          Go checkout the top rated whiskeys and add them to your shelf by
+          rating the ones you have tried.
+        </p>
+      </div>
+    </a>
     </div>
-      {% endif %}
-      <div id="whiskey-cards" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 grid-flow-row gap-4 h-full w-full xl:ml-8">
-        {% for whiskey in whiskeys %}
-      <div
-      class="min-h-[16rem] flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-gray-200 hover:scale-105 duration-300"
+    <div
+      class="min-h-[16rem] w-full flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-[#d4e0d0] hover:scale-105 duration-300"
+    >
+    <a
+      href="/whiskeys/new"
+      class="flex flex-col justify-between p-4 leading-normal w-full"
+    >
+      <div class="flex flex-col content-between p-4 leading-normal">
+        <h5
+          class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+        >
+          Add a Whiskey
+        </h5>
+        <p class="mb-3 font-semibold text-gray-700 dark:text-gray-400">
+          If you cant find the whiskey you are looking for, you can add it.
+        </p>
+      </div>
+    </a>
+  </div>
+  {% endif %}
+  <div
+    id="whiskey-cards"
+    class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 grid-flow-row gap-4 h-full w-full xl:ml-8"
+  >
+    {% for whiskey in whiskeys %}
+    <div
+      class="min-h-[16rem] flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-[#d4e0d0] hover:scale-105 duration-300"
     >
       <a
         href="/whiskey/{{whiskey.id}}"
@@ -243,103 +251,103 @@ content %}
   </div>
   <div
     id="recently-rated"
-    class="flex max-w-md mx-auto flex-col items-center text-end py-4 px-8 my-4 border-4 border-slate-800 rounded-lg bg-slate-300 shadow-md shadow-black xl:mx-8"
+    class="flex max-w-md mx-auto flex-col items-center text-end py-4 px-8 mb-4 mt-8 xl:mt-0 border-4 border-slate-800 rounded-lg bg-white shadow-md shadow-black xl:mx-8"
   >
     <h2 class="text-4xl text-center font-bold">Recently Rated</h2>
     {% if whiskeys|length < 1 %}
     <h1 class="mt-4">You haven't rated any whiskey yet</h1>
 
-    {% endif %} 
-   <div class="grid grid-cols-1  gap-4 h-full w-full min-w-fit mx-auto"> 
-    {% for whiskey in recent %}
-    <div
-      class="min-w-fit min-h-[16rem] flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-gray-200 hover:scale-105 duration-300"
-    >
-      <a
-        href="/whiskey/{{whiskey.id}}"
-        class="flex flex-row justify-around min-w-fit w-full"
-        style="min-width: 250px;"
+    {% endif %}
+    <div class="grid grid-cols-1 gap-4 h-full w-full min-w-fit mx-auto">
+      {% for whiskey in recent %}
+      <div
+        class="min-w-fit min-h-[16rem] flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-[#d4e0d0] hover:scale-105 duration-300"
       >
-        <img
-          class="object-contain rounded-t-lg h-40 w-20 rounded-none rounded-l-lg ml-1 self-center"
-          src="{{ image_urls[whiskey.id] }}"
-          alt=""
-        />
-        <div class="flex flex-col justify-between p-4 leading-normal">
-          <h5
-            class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-          >
-            {{whiskey.name}}
-          </h5>
-          <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-            ABV: {{whiskey.abv}}%
-          </p>
-          <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-            Rating: {{whiskey.rating.rating}}
-          </p>
-        </div>
-      </a>
+        <a
+          href="/whiskey/{{whiskey.id}}"
+          class="flex flex-row justify-around min-w-fit w-full"
+          style="min-width: 250px"
+        >
+          <img
+            class="object-contain rounded-t-lg h-40 w-20 rounded-none rounded-l-lg ml-1 self-center"
+            src="{{ image_urls[whiskey.id] }}"
+            alt=""
+          />
+          <div class="flex flex-col justify-between p-4 leading-normal">
+            <h5
+              class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+            >
+              {{whiskey.name}}
+            </h5>
+            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+              ABV: {{whiskey.abv}}%
+            </p>
+            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+              Rating: {{whiskey.rating.rating}}
+            </p>
+          </div>
+        </a>
 
-      {% if whiskey.creator.id == user.id %}
-      <div id="modal-{{ whiskey.id }}-edit" class="modal">
-        <div class="modal-content">
-          <h3 class="font-semibold mb-2">
-            Are you sure you want to edit this whiskey?
-          </h3>
-          <button
-            onclick="closeModal({{ whiskey.id }}, 'edit')"
-            class="ml-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Cancel
-          </button>
-          <form
-            method="post"
-            action="/whiskey/edit/{{ whiskey.id }}"
-            class="inline ml-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded caret-black"
-          >
-            <button type="submit" class="text-white hover:text-red-700">
-              Edit
+        {% if whiskey.creator.id == user.id %}
+        <div id="modal-{{ whiskey.id }}-edit" class="modal">
+          <div class="modal-content">
+            <h3 class="font-semibold mb-2">
+              Are you sure you want to edit this whiskey?
+            </h3>
+            <button
+              onclick="closeModal({{ whiskey.id }}, 'edit')"
+              class="ml-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded"
+            >
+              Cancel
             </button>
-          </form>
+            <form
+              method="post"
+              action="/whiskey/edit/{{ whiskey.id }}"
+              class="inline ml-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded caret-black"
+            >
+              <button type="submit" class="text-white hover:text-red-700">
+                Edit
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-      <button
-        onclick="openModal({{whiskey.id}}, 'edit')"
-        class="ml-auto mt-2 mr-2 z-10 text-blue-500 hover:text-blue-700 self-start"
-      >
-        <i class="fa fa-edit pointer-events-none"></i>
-      </button>
-      <div id="modal-{{ whiskey.id }}-delete" class="modal">
-        <div class="modal-content">
-          <h3 class="font-semibold mb-2">
-            Are you sure you want to delete this whiskey?
-          </h3>
-          <button
-            onclick="closeModal({{ whiskey.id }}, 'delete')"
-            class="ml-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Cancel
-          </button>
-          <form
-            method="post"
-            action="/whiskey/{{ whiskey.id }}/delete"
-            class="inline ml-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            <button type="submit" class="text-white hover:text-red-700">
-              Delete
+        <button
+          onclick="openModal({{whiskey.id}}, 'edit')"
+          class="ml-auto mt-2 mr-2 z-10 text-blue-500 hover:text-blue-700 self-start"
+        >
+          <i class="fa fa-edit pointer-events-none"></i>
+        </button>
+        <div id="modal-{{ whiskey.id }}-delete" class="modal">
+          <div class="modal-content">
+            <h3 class="font-semibold mb-2">
+              Are you sure you want to delete this whiskey?
+            </h3>
+            <button
+              onclick="closeModal({{ whiskey.id }}, 'delete')"
+              class="ml-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+            >
+              Cancel
             </button>
-          </form>
+            <form
+              method="post"
+              action="/whiskey/{{ whiskey.id }}/delete"
+              class="inline ml-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
+            >
+              <button type="submit" class="text-white hover:text-red-700">
+                Delete
+              </button>
+            </form>
+          </div>
         </div>
+        <button
+          onclick="openModal({{whiskey.id}}, 'delete')"
+          class="ml-auto mt-2 mr-2 z-10 text-red-500 hover:text-red-700 self-start"
+        >
+          <i class="fas fa-trash pointer-events-none"></i>
+        </button>
+        {% endif %}
       </div>
-      <button
-        onclick="openModal({{whiskey.id}}, 'delete')"
-        class="ml-auto mt-2 mr-2 z-10 text-red-500 hover:text-red-700 self-start"
-      >
-        <i class="fas fa-trash pointer-events-none"></i>
-      </button>
-      {% endif %}
-    </div>
-    {% endfor %}
+      {% endfor %}
     </div>
   </div>
 </section>
