@@ -98,14 +98,30 @@ function closeAllReplyFormsExcept(exceptForm) {
   });
 }
 
-// delete/edit whiskey confirmation
-function openModal(id, action) {
-  console.log(`modal-${id}-${action}`);
-  const modal = document.getElementById(`modal-${id}-${action}`);
-  modal.style.display = "block";
+// Create a function to open the modal
+function openModal(whiskeyId, action) {
+  const confirmationForm = document.getElementById("confirmationForm");
+
+  const modal = document.getElementById("confirmationModal");
+  const actionBtn = document.getElementById("actionBtn");
+
+  if (action === "edit") {
+    confirmationForm.action = "/whiskey/edit/" + whiskeyId;
+    actionBtn.innerText = "Edit";
+    actionBtn.classList.add("bg-blue-500", "hover:bg-blue-700");
+    actionBtn.classList.remove("bg-red-500", "hover:bg-red-700");
+  } else {
+    confirmationForm.action = `/whiskey/delete` + whiskeyId;
+    actionBtn.innerText = "Delete";
+    actionBtn.classList.add("bg-red-500", "hover:bg-red-700");
+    actionBtn.classList.remove("bg-blue-500", "hover:bg-blue-700");
+  }
+
+  modal.classList.add("visible");
 }
 
-function closeModal(id, action) {
-  const modal = document.getElementById(`modal-${id}-${action}`);
-  modal.style.display = "none";
+// Create a function to close the modal
+function closeModal() {
+  const modal = document.getElementById("confirmationModal");
+  modal.classList.remove("visible");
 }

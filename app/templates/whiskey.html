@@ -1,5 +1,36 @@
 {% extends "base.html" %} {% block title %}MyShelf{% endblock %} {% block
 content %}
+
+<div id="confirmationModal">
+  <div
+    class="bg-white p-8 w-3/4 sm:w-1/2 xl:w-1/3 mx-auto my-16 rounded-lg shadow-lg"
+  >
+    <h2 class="text-2xl font-semibold mb-4">Are you sure?</h2>
+    <p class="text-gray-700 mb-6">
+      You are about to <span id="actionText">edit</span> this whiskey. This
+      action cannot be undone. Do you want to proceed?
+    </p>
+    <div class="flex justify-between">
+      <button
+        class="bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded"
+        onclick="closeModal()"
+      >
+        Cancel
+      </button>
+      <form id="confirmationForm" action="" method="POST">
+        <input type="hidden" name="whiskey_id" id="whiskeyIdInput" />
+        <button
+          id="actionBtn"
+          type="submit"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
+        >
+          Edit
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
 <section id="whiskey_hero" class="p-2 xl:p-4">
   <div
     class="flex flex-col xl:flex-row justify-around items-center m-2 p-4 bg-white border border-gray-200 rounded-lg shadow-lg shadow-black xl:w-full"
@@ -26,6 +57,12 @@ content %}
       <p class="mb-3 font-normal text-2xl text-gray-500">
         <span class="font-semibold">Rating:</span> {{ whiskey.rating.rating }}
       </p>
+      <p class="mb-3 font-normal text-2xl text-gray-500">
+        <span class="font-semibold">Submitted by:</span>
+        <a class="text-blue-800" href="/usershelf/{{whiskey.creator.id}}"
+          >{{ creator.creator.username}}</a
+        >
+      </p>
     </div>
     <div class="border h-full w-full flex justify-center">
       <img
@@ -37,56 +74,14 @@ content %}
 
     <div class="flex flex-col h-full w-full">
       {% if whiskey.creator.id == user.id %}
-      <div id="modal-{{ whiskey.id }}-edit" class="modal">
-        <div class="modal-content">
-          <h3 class="font-semibold mb-2">
-            Are you sure you want to edit this whiskey?
-          </h3>
-          <button
-            onclick="closeModal({{ whiskey.id }}, 'edit')"
-            class="ml-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Cancel
-          </button>
-          <form
-            method="post"
-            action="/whiskey/edit/{{ whiskey.id }}"
-            class="inline ml-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded caret-black"
-          >
-            <button type="submit" class="text-white hover:text-red-700">
-              Edit
-            </button>
-          </form>
-        </div>
-      </div>
+
       <button
         onclick="openModal({{whiskey.id}}, 'edit')"
         class="ml-auto mt-2 mr-2 z-10 text-blue-500 hover:text-blue-700 self-start"
       >
         <i class="fa fa-edit pointer-events-none"></i>
       </button>
-      <div id="modal-{{ whiskey.id }}-delete" class="modal">
-        <div class="modal-content">
-          <h3 class="font-semibold mb-2">
-            Are you sure you want to delete this whiskey?
-          </h3>
-          <button
-            onclick="closeModal({{ whiskey.id }}, 'delete')"
-            class="ml-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Cancel
-          </button>
-          <form
-            method="post"
-            action="/whiskey/{{ whiskey.id }}/delete"
-            class="inline ml-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            <button type="submit" class="text-white hover:text-red-700">
-              Delete
-            </button>
-          </form>
-        </div>
-      </div>
+
       <button
         onclick="openModal({{whiskey.id}}, 'delete')"
         class="ml-auto mt-2 mr-2 z-10 text-red-500 hover:text-red-700 self-start"
@@ -148,12 +143,10 @@ content %}
     </div>
   </div>
 </section>
-<section class="bg-white py-8 lg:py-16 xl:px-8">
-  <div class="max-w-4xl mx-auto px-4">
+<section class="bg-white py-8 px-2 max-w-4xl mx-auto lg:py-16 xl:px-8">
+  <div class="mx-auto px-4">
     <div class="flex justify-between items-center mb-6">
-      <h2 class="text-lg lg:text-2xl font-bold text-gray-900">
-        Discussion (20)
-      </h2>
+      <h2 class="text-lg lg:text-2xl font-bold text-gray-900">Discussion</h2>
     </div>
   </div>
   <form class="mb-6" action="/comment/{{whiskey.id}}" method="post">
@@ -182,11 +175,15 @@ content %}
     class="p-4 text-base bg-white rounded-lg border border-gray-500 mb-4"
   >
     <header class="">
-      <div class="flex justify-between items-center mb-4 relative">
+      <div class="flex justify-between items-center mb-2 relative">
         <div class="flex items-end text-end">
           <span class="mr-5 text-lg font-semibold text-gray-900"
-            >{{ comment.creator.username }}</span
-          >
+            ><a
+              class="text-blue-800"
+              href="/usershelf/{{comment.creator.id}}"
+            >
+            {{ comment.creator.username }}</span
+          ></a>
           <span class="text-lg text-gray-600"
             ><time
               pubdate
@@ -235,16 +232,13 @@ content %}
               >
             </li>
             {% endif %}
-            <li>
-              <a href="#" class="block py-2 px-4 hover:bg-gray-100">Report</a>
-            </li>
           </ul>
         </div>
       </div>
-      <hr class="h-px bg-gray-200 border-0 mb-6" />
+      <hr class="h-px bg-gray-200 border-0 mb-4" />
     </header>
 
-    <p class="text-gray-500">{{ comment.comment }}</p>
+    <p class="text-gray-700">{{ comment.comment }}</p>
     <div class="flex items-center mt-8 space-x-4">
       <button
         type="button"
@@ -304,7 +298,10 @@ content %}
       <div class="flex justify-between items-center mb-4 relative">
         <div class="flex items-end text-end">
           <span class="mr-5 text-lg font-semibold text-gray-900"
-            >{{ reply.creator.username }}</span
+            ><a
+            class="text-blue-800"
+            href="/usershelf/{{reply.creator.id}}"
+          >{{ reply.creator.username }}</a></span
           >
           <span class="text-lg text-gray-600"
             ><time
@@ -342,7 +339,7 @@ content %}
           class="dropdown-content hidden origin-top-right right-0 z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow absolute top-full"
         >
           <ul
-            class="py-1 text-sm text-gray-700"
+            class="py-1 text-sm text-gray-800"
             aria-labelledby="dropdownMenuIconHorizontalButton"
           >
             {% if reply.creator.id == user.id %}
@@ -354,17 +351,14 @@ content %}
               >
             </li>
             {% endif %}
-            <li>
-              <a href="#" class="block py-2 px-4 hover:bg-gray-100">Report</a>
-            </li>
           </ul>
         </div>
       </div>
-      <hr class="h-px bg-gray-200 border-0 mb-6" />
     </header>
-    <p class="text-gray-500">{{ reply.content }}</p>
+    <p class="text-gray-600">{{ reply.content }}</p>
   </article>
-  <hr class="mb-6 border-gray-500" />
-  {% endfor %} {% endfor %}
+  {% endfor %}
+  <hr class="h-px bg-gray-200 border-0 mb-6" />
+  {% endfor %}
 </section>
 {% endblock %}

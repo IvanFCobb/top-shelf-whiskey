@@ -151,6 +151,64 @@ def myshelf():
     return render_template("myshelf.html", sort_by_rating=sort_by_rating, whiskeys=whiskeys, user=user, recent=recent, categories=categories, image_urls=image_urls)
 
 
+@app.route('/usershelf/<int:num>', methods=['GET', 'POST'])
+def usershelf(num):
+    if 'user_id' not in session:
+        return redirect ("/")
+    sort_by_rating = request.args.get("sort", "desc") == "desc"    
+    if sort_by_rating:
+        sort_order = "DESC"
+    else:
+        sort_order = "ASC"
+        
+    if request.method == 'POST':
+        form_sort_order = request.form.get('sort_order', 'asc')
+        if form_sort_order:
+            sort_order = 'asc'
+        else:
+            sort_order = 'desc'
+            
+    data = {
+        "id": num,
+        "sort_order": sort_order
+    }
+    
+    filters = {
+        "category" : request.args.get("category", "all"),
+        "distillery" : "all"
+    }
+
+    categories = ["All", "Bourbon", "Rye", "Scotch", "Irish", "Japanese", "Canadian", "American", "Tennessee", "Other"]
+    recent = Whiskey.get_recently_rated_whiskeys(data)
+    search = request.args.get('search', None)
+    whiskeys = Whiskey.get_all_rated_whiskeys(data, filters, search)
+    user = User.get_by_id(data)
+    image_urls = {}
+    
+    for whiskey in recent:
+        whiskey_id_str = str(whiskey.id)
+        image_folder = os.path.join('app', 'static', 'uploads')
+        image_path = find_image_with_extension(image_folder, whiskey_id_str)
+        if image_path:
+
+            image_ext = image_path.split('.')[-1]
+            image_urls[whiskey.id] = url_for('static', filename=f'uploads/{whiskey_id_str}.{image_ext}')
+        else:
+            image_urls[whiskey.id] = url_for('static', filename='images/placeholder_whiskey.png')
+    
+    for whiskey in whiskeys:
+        whiskey_id_str = str(whiskey.id)
+        image_folder = os.path.join('app', 'static', 'uploads')
+        image_path = find_image_with_extension(image_folder, whiskey_id_str)
+        if image_path:
+            image_ext = image_path.split('.')[-1]
+            image_urls[whiskey.id] = url_for('static', filename=f'uploads/{whiskey_id_str}.{image_ext}')
+        else:
+            image_urls[whiskey.id] = url_for('static', filename='images/placeholder_whiskey.png')
+            
+    return render_template("user_shelf.html", sort_by_rating=sort_by_rating, whiskeys=whiskeys, user=user, recent=recent, categories=categories, image_urls=image_urls)
+
+
 
 @app.route('/whiskeys/new')
 def create_whiskey_view():
@@ -180,6 +238,7 @@ def one_whiskey(num):
     
     user = User.get_by_id(data)
     whiskey = Whiskey.get_whiskey_with_user_rating(data, whiskey_data)
+    creator = Whiskey.get_single_whiskey(whiskey_data)
     whiskey_id_str = str(whiskey.id)
     image_urls = {}
     image_path = os.path.join('app', 'static', 'uploads', whiskey_id_str + '.jpg')
@@ -222,7 +281,7 @@ def one_whiskey(num):
                 compress_and_save_image(file_path)
 
         return redirect(url_for('one_whiskey', num=num))
-    return render_template("whiskey.html", user=user, whiskey=whiskey, image_urls=image_urls, comments=comments)
+    return render_template("whiskey.html", user=user, creator=creator, whiskey=whiskey, image_urls=image_urls, comments=comments)
 
 
 

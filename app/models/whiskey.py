@@ -19,6 +19,23 @@ class Whiskey:
         self.creator = None
         self.rating = None
         
+        
+    @classmethod
+    def get_single_whiskey(cls, whiskey_data):
+        query = "SELECT * FROM whiskeys left join users on users.id = whiskeys.user_id WHERE whiskeys.id = %(id)s;"
+        results = connectToMySQL('whiskeydb').query_db(query, whiskey_data)
+        one_whiskey = cls(results[0])
+        one_whiskeys_creator_info = {
+            "id": results[0]['user_id'], 
+            "username": results[0]['username'],
+            "email": results[0]['email'],
+            "password": results[0]['password'],
+            "created_at": results[0]['users.created_at'],
+            "updated_at": results[0]['users.updated_at'],
+        }
+        creator = user.User(one_whiskeys_creator_info)
+        one_whiskey.creator = creator
+        return one_whiskey
     
     
     @classmethod
@@ -192,9 +209,14 @@ class Whiskey:
     
     @classmethod
     def edit(cls, data):
-        query = """UPDATE whiskeys 
-                   SET name = %(name)s, category = %(category)s, distillery = %(distillery)s, age = %(age)s, abv = %(abv)s, user_id = %(user_id)s 
-                   WHERE (id = %(id)s);"""
+        if data["age"] == " ":
+            query = """UPDATE whiskeys 
+                     SET name = %(name)s, category = %(category)s, distillery = %(distillery)s, age = %(age)s, abv = %(abv)s, user_id = %(user_id)s 
+                     WHERE (id = %(id)s);"""
+        else:
+            query = """UPDATE whiskeys
+                        SET name = %(name)s, category = %(category)s, distillery = %(distillery)s, abv = %(abv)s, user_id = %(user_id)s
+                        where (id = %(id)s);"""
         return connectToMySQL('whiskeydb').query_db(query, data)
     
     
@@ -217,7 +239,7 @@ class Whiskey:
             flash("Description must be at least 10 characters", "whiskey")
             is_valid = False
         if len(data['distillery']) < 1:
-            flash("Price Required", "whiskey")
+            flash("Distillery Required", "whiskey")
             is_valid = False
         if len(data['age']) > 0:
             if float(data['age']) < 0:

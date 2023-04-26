@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block title %}MyShelf{% endblock %} {% block
+{% extends "base.html" %} {% block title %}{{user.username}}{% endblock %} {% block
 content %}
 
 <div id="confirmationModal">
@@ -37,10 +37,11 @@ content %}
 
 <section id="catagories" class="p-2 xl:p-4">
   <div class="flex flex-col-reverse xl:flex-row justify-center xl:justify-start">
+    <div class="flex flex-col-reverse lg:flex-row">
     <form
       method="get"
       action="/myshelf"
-      class="mb-4 w-fit ml-2 mr-10 mt-2 xl:mt-10 xl:mx-10 text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300"
+      class="mb-4 w-fit ml-2 mr-10 mt-2 md:mt-10 xl:mx-10 text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300"
     >
       <input
         type="hidden"
@@ -90,7 +91,7 @@ content %}
     <form
       method="get"
       action="/myshelf"
-      class="mb-4 w-fit ml-2 mr-10 mt-2 xl:mt-10 xl:mx-10 text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300"
+      class="mb-4 w-fit ml-2 mr-10 mt-2 md:mt-10 xl:mx-10 text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center shadow-md shadow-slate-900 ease-out duration-300"
     >
       <input
         type="hidden"
@@ -145,7 +146,8 @@ content %}
         </button>
       </div>
     </form>
-    <h1 class="mb-4 mt-10 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl xl:ml-auto md:mr-16 lg:text-6xl">My Shelf</h1>
+  </div>
+    <h1 class="mb-4 mt-10 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl xl:ml-auto md:mr-16 lg:text-6xl">{{user.username}}</h1>
   </div>
 </section>
 <section
@@ -163,30 +165,11 @@ content %}
         <h5
           class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
         >
-          Top Whiskeys
+          This user hasn't rated any whiskey yet.
         </h5>
         <p class="mb-3 font-semibold text-gray-700 dark:text-gray-400">
           Go checkout the top rated whiskeys and add them to your shelf by
           rating the ones you have tried.
-        </p>
-      </div>
-    </a>
-    </div>
-    <div
-      class="min-h-[16rem] w-full flex flex-row items-center m-2 bg-white border border-gray-200 rounded-lg max-w-xl shadow-lg shadow-black hover:bg-[#d4e0d0] hover:scale-105 duration-300"
-    >
-    <a
-      href="/whiskeys/new"
-      class="flex flex-col justify-between p-4 leading-normal w-full"
-    >
-      <div class="flex flex-col content-between p-4 leading-normal">
-        <h5
-          class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-        >
-          Add a Whiskey
-        </h5>
-        <p class="mb-3 font-semibold text-gray-700 dark:text-gray-400">
-          If you cant find the whiskey you are looking for, you can add it.
         </p>
       </div>
     </a>
@@ -249,7 +232,7 @@ content %}
   >
     <h2 class="text-4xl text-center font-bold">Recently Rated</h2>
     {% if whiskeys|length < 1 %}
-    <h1 class="mt-4">You haven't rated any whiskey yet</h1>
+    <h1 class="mt-4">This user hasn't rated any whiskey yet</h1>
 
     {% endif %}
     <div class="grid grid-cols-1 gap-4 h-full w-full min-w-fit mx-auto">
