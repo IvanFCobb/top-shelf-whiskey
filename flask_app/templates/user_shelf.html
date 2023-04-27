@@ -207,22 +207,7 @@ content %}
         </div>
       </a>
 
-      {% if whiskey.creator.id == user.id %}
 
-      <button
-        onclick="openModal({{whiskey.id}}, 'edit')"
-        class="ml-auto mt-2 mr-2 z-10 text-blue-500 hover:text-blue-700 self-start"
-      >
-        <i class="fa fa-edit pointer-events-none"></i>
-      </button>
-
-      <button
-        onclick="openModal({{whiskey.id}}, 'delete')"
-        class="ml-auto mt-2 mr-2 z-10 text-red-500 hover:text-red-700 self-start"
-      >
-        <i class="fas fa-trash pointer-events-none"></i>
-      </button>
-      {% endif %}
     </div>
     {% endfor %}
   </div>
