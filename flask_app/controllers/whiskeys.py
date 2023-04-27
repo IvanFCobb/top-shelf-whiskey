@@ -1,10 +1,10 @@
 import os
-from app.models.user import User
-from app.models.whiskey import Whiskey
-from app.models.rating import Rating
-from app.models.comment import Comment
-from app.models.reply import Reply
-from app import app
+from flask_app.models.user import User
+from flask_app.models.whiskey import Whiskey
+from flask_app.models.rating import Rating
+from flask_app.models.comment import Comment
+from flask_app.models.reply import Reply
+from flask_app import app
 from PIL import Image
 from flask import render_template, redirect, request, session, flash, url_for, send_from_directory
 from werkzeug.utils import secure_filename
@@ -81,7 +81,7 @@ def topwhiskey():
     for whiskey in whiskeys:
         print(whiskey.category)
         whiskey_id_str = str(whiskey.id)
-        image_folder = os.path.join('app', 'static', 'uploads')
+        image_folder = os.path.join('flask_app', 'static', 'uploads')
         image_path = find_image_with_extension(image_folder, whiskey_id_str)
         if image_path:
             image_ext = image_path.split('.')[-1]
@@ -129,7 +129,7 @@ def myshelf():
     
     for whiskey in recent:
         whiskey_id_str = str(whiskey.id)
-        image_folder = os.path.join('app', 'static', 'uploads')
+        image_folder = os.path.join('flask_app', 'static', 'uploads')
         image_path = find_image_with_extension(image_folder, whiskey_id_str)
         if image_path:
 
@@ -140,7 +140,7 @@ def myshelf():
     
     for whiskey in whiskeys:
         whiskey_id_str = str(whiskey.id)
-        image_folder = os.path.join('app', 'static', 'uploads')
+        image_folder = os.path.join('flask_app', 'static', 'uploads')
         image_path = find_image_with_extension(image_folder, whiskey_id_str)
         if image_path:
             image_ext = image_path.split('.')[-1]
@@ -187,7 +187,7 @@ def usershelf(num):
     
     for whiskey in recent:
         whiskey_id_str = str(whiskey.id)
-        image_folder = os.path.join('app', 'static', 'uploads')
+        image_folder = os.path.join('Flask_app', 'static', 'uploads')
         image_path = find_image_with_extension(image_folder, whiskey_id_str)
         if image_path:
 
@@ -198,7 +198,7 @@ def usershelf(num):
     
     for whiskey in whiskeys:
         whiskey_id_str = str(whiskey.id)
-        image_folder = os.path.join('app', 'static', 'uploads')
+        image_folder = os.path.join('flask_app', 'static', 'uploads')
         image_path = find_image_with_extension(image_folder, whiskey_id_str)
         if image_path:
             image_ext = image_path.split('.')[-1]
@@ -241,10 +241,12 @@ def one_whiskey(num):
     creator = Whiskey.get_single_whiskey(whiskey_data)
     whiskey_id_str = str(whiskey.id)
     image_urls = {}
-    image_path = os.path.join('app', 'static', 'uploads', whiskey_id_str + '.jpg')
+    image_path = os.path.join('flask_app', 'static', 'uploads', whiskey_id_str + '.jpg')
+    print("image path", image_path)
     whiskey_id_str = str(whiskey.id)
-    image_folder = os.path.join('app', 'static', 'uploads')
+    image_folder = os.path.join('flask_app', 'static', 'uploads')
     image_path = find_image_with_extension(image_folder, whiskey_id_str)
+    print("image path", image_path)
     if image_path:
         print("image found")
         image_ext = image_path.split('.')[-1]

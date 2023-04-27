@@ -1,8 +1,8 @@
-from app.config.mysqlconnection import connectToMySQL
+from flask_app.config.mysqlconnection import connectToMySQL
 from flask import flash
-from app.models import user
-from app.models import rating
-from app.models import comment
+from flask_app.models import user
+from flask_app.models import rating
+from flask_app.models import comment
 
 
 class Whiskey:

@@ -1,7 +1,7 @@
-from app.config.mysqlconnection import connectToMySQL
-from app.models import whiskey
-from app.models import user
-from app.models import comment
+from flask_app.config.mysqlconnection import connectToMySQL
+from flask_app.models import whiskey
+from flask_app.models import user
+from flask_app.models import comment
 
 
 class Rating:

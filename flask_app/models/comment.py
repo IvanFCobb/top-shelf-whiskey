@@ -1,8 +1,8 @@
-from app.config.mysqlconnection import connectToMySQL
-from app.models import whiskey
-from app.models import user
-from app.models import rating
-from app.models import reply
+from flask_app.config.mysqlconnection import connectToMySQL
+from flask_app.models import whiskey
+from flask_app.models import user
+from flask_app.models import rating
+from flask_app.models import reply
 
 class Comment:
     def __init__(self, data):
