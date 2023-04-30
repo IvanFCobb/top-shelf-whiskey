@@ -12,7 +12,7 @@ from werkzeug.utils import secure_filename
 
 
 # Configure upload settings and allowed file extensions
-app.config['UPLOAD_FOLDER'] = os.path.join('app', 'static', 'uploads')
+app.config['UPLOAD_FOLDER'] = os.path.join('flask_app', 'static', 'uploads')
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -397,7 +397,7 @@ def new_whiskey():
             
             
             # Compress and save the image
-            compress_and_save_image(file_path)
+            # compress_and_save_image(file_path)
             
             return redirect('/myshelf')
         else:
