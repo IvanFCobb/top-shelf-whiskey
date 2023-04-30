@@ -309,12 +309,15 @@ def whiskey_edit(whiskey_id):
     return render_template("edit_whiskey.html", user=user, whiskey=whiskey)
 
 
-@app.route('/whiskeys/delete/<int:num>')
+@app.route('/whiskeys/delete/<int:num>', methods=['POST'])
 def whiskey_delete(num):
     if 'user_id' not in session:
         return redirect ("/")
-    Whiskey.delete(num)
-    return redirect("/whiskeys")
+    data = {
+        "id" : num
+    }
+    Whiskey.delete(data)
+    return redirect("/topwhiskey")
 
 
 # Function to compress and save an image

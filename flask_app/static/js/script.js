@@ -106,12 +106,12 @@ function openModal(whiskeyId, action) {
   const actionBtn = document.getElementById("actionBtn");
 
   if (action === "edit") {
-    confirmationForm.action = "/whiskey/edit/" + whiskeyId;
+    confirmationForm.action = "/whiskeys/edit/" + whiskeyId;
     actionBtn.innerText = "Edit";
     actionBtn.classList.add("bg-blue-500", "hover:bg-blue-700");
     actionBtn.classList.remove("bg-red-500", "hover:bg-red-700");
   } else {
-    confirmationForm.action = `/whiskey/delete` + whiskeyId;
+    confirmationForm.action = `/whiskeys/delete/` + whiskeyId;
     actionBtn.innerText = "Delete";
     actionBtn.classList.add("bg-red-500", "hover:bg-red-700");
     actionBtn.classList.remove("bg-blue-500", "hover:bg-blue-700");
