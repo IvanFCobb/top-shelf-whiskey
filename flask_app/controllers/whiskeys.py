@@ -8,8 +8,12 @@ from flask_app import app
 from PIL import Image
 from flask import render_template, redirect, request, session, flash, url_for, send_from_directory
 from werkzeug.utils import secure_filename
+import logging
 
 
+
+logging.basicConfig(filename='app.log', level=logging.DEBUG)
+app.logger.addHandler(logging.StreamHandler())
 
 # Configure upload settings and allowed file extensions
 app.config['UPLOAD_FOLDER'] = os.path.join('flask_app', 'static', 'uploads')
@@ -320,6 +324,7 @@ def compress_and_save_image(file_path):
 
 @app.route('/create_whiskey', methods=["POST"])
 def new_whiskey():
+    app.logger.info("new_whiskey route invoked")
     # Check if the user is logged in
     if 'user_id' not in session:
         return redirect ("/")
@@ -356,6 +361,7 @@ def new_whiskey():
         
         # If a file was selected and it has an allowed file extension, proceed with saving the entry
         if file and allowed_file(file.filename):
+            app.logger.info("Image file is allowed")
             # Prepare data for saving the whiskey entry
             data = {
                 "name": request.form['name'],
@@ -370,6 +376,7 @@ def new_whiskey():
             
             # Save the whiskey entry and get the generated file name
             file_name = Whiskey.save(data)
+            app.logger.info(f"Whiskey saved with file_name: {file_name}")
             file_type = secure_filename(file.filename.rsplit('.', 1)[1].lower())
             
             rating_data = {
@@ -379,17 +386,20 @@ def new_whiskey():
             }
             
             Rating.save(rating_data)
-            
-            # Save the uploaded image file to the specified path
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{file_name}.{file_type}")
-            print(file_path)
-            file.save(file_path)
-            
-            
-            # Compress and save the image
-            # compress_and_save_image(file_path)
-            
-            return redirect('/myshelf')
+            try:
+                # Save the uploaded image file to the specified path
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{file_name}.{file_type}")
+                file.save(file_path)
+                
+                
+                # Compress and save the image
+                compress_and_save_image(file_path)
+                
+                return redirect('/myshelf')
+            except:
+                app.logger.info("Error saving image")
+                flash('Error saving image', "register")
+                return redirect('/myshelf')
         else:
             flash('Invalid file format', "register")
             return redirect('/whiskeys/new')
