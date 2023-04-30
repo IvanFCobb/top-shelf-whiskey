@@ -12,7 +12,7 @@ from werkzeug.utils import secure_filename
 
 
 # Configure upload settings and allowed file extensions
-app.config['UPLOAD_FOLDER'] = 'app/static/uploads'
+app.config['UPLOAD_FOLDER'] = os.path.join('app', 'static', 'uploads')
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -38,6 +38,7 @@ def find_image_with_extension(image_folder, image_name):
         if os.path.isfile(file_path):
             return file_path
     return None
+
 
 
 
@@ -391,7 +392,9 @@ def new_whiskey():
             
             # Save the uploaded image file to the specified path
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{file_name}.{file_type}")
+            print(file_path)
             file.save(file_path)
+            
             
             # Compress and save the image
             compress_and_save_image(file_path)
